@@ -1,4 +1,6 @@
 package chess;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -7,9 +9,33 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessBoard {
+    public enum SpaceType {
+        BLACK,
+        WHITE,
+        UNUSED
+    }
+    private int height = 8;
+    private int width = 8;
+    private int maxFairyHeight = 8;
+    private int maxFairyWidth = 8;
+    public List<List<ChessPiece>> Board = new ArrayList<List<ChessPiece>>()
+        {
 
+        }
+    ;
+    List<List<SpaceType>> BoardSpaces = Arrays.asList(
+            Arrays.asList(SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK),
+            Arrays.asList(SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE),
+            Arrays.asList(SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK),
+            Arrays.asList(SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE),
+            Arrays.asList(SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK),
+            Arrays.asList(SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE),
+            Arrays.asList(SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK),
+            Arrays.asList(SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE)
+    );
+    ;
     public ChessBoard() {
-        
+
     }
 
     /**
@@ -19,7 +45,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+        Board.get(position.getRow()).set(position.getColumn(), piece);
     }
 
     /**
@@ -30,7 +56,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        return Board.get(position.getRow()).get(position.getColumn());
     }
 
     /**
@@ -38,6 +64,6 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+
     }
 }
