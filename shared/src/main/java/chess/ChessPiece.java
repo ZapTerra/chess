@@ -1,6 +1,9 @@
 package chess;
 
+import chess.pieces.Pawn;
+
 import java.util.Collection;
+
 
 /**
  * Represents a single chess piece
@@ -9,34 +12,64 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    private PieceType mans;
+    public PieceType piece;
+    public ChessGame.TeamColor team;
+
+    public ChessPiece(){
+        team = ChessGame.TeamColor.WHITE;
+        piece = PieceType.PAWN;
+        OnCreate();
+    }
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        team = pieceColor;
+        piece = type;
+        OnCreate();
+    }
+
+    public ChessPiece getActual(){
+        if(piece == PieceType.PAWN){
+            return new Pawn(team);
+        }
+        return null;
     }
 
     /**
      * The various different chess piece options
      */
+
     public enum PieceType {
         KING,
         QUEEN,
         BISHOP,
         KNIGHT,
         ROOK,
-        PAWN
+        PAWN,
+        MOLEMAN,
+        SQUIRREL
+    }
+
+    public enum Team {
+        BLACK,
+        WHITE,
+        GRAVY
+    }
+
+    public void OnCreate(){
+
     }
 
     /**
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return team;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        return
+        return piece;
     }
 
     /**
@@ -47,6 +80,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        return null;
     }
 }

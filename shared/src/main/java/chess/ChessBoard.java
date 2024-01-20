@@ -18,24 +18,31 @@ public class ChessBoard {
     private int width = 8;
     private int maxFairyHeight = 8;
     private int maxFairyWidth = 8;
-    public List<List<ChessPiece>> Board = new ArrayList<List<ChessPiece>>()
-        {
-
-        }
+    public List<List<ChessPiece>> Board = Arrays.asList();
+    public List<List<ChessPiece.PieceType>> PieceSetup = Arrays.asList(
+            Arrays.asList(ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.KING, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK),
+            Arrays.asList(ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN),
+            Arrays.asList(null, null, null, null, null, null, null, null),
+            Arrays.asList(null, null, null, null, null, null, null, null),
+            Arrays.asList(null, null, null, null, null, null, null, null),
+            Arrays.asList(null, null, null, null, null, null, null, null),
+            Arrays.asList(ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN, ChessPiece.PieceType.PAWN),
+            Arrays.asList(ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.KING, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK)
+        );
     ;
-    List<List<SpaceType>> BoardSpaces = Arrays.asList(
-            Arrays.asList(SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK),
-            Arrays.asList(SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE),
-            Arrays.asList(SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK),
-            Arrays.asList(SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE),
-            Arrays.asList(SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK),
-            Arrays.asList(SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE),
-            Arrays.asList(SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK),
-            Arrays.asList(SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE, SpaceType.BLACK, SpaceType.WHITE)
-    );
+    public List<List<ChessGame.TeamColor>> TeamSetup = Arrays.asList(
+            Arrays.asList(ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK),
+            Arrays.asList(ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK),
+            Arrays.asList(ChessGame.TeamColor.CHAOS, ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS),
+            Arrays.asList(ChessGame.TeamColor.CHAOS, ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS),
+            Arrays.asList(ChessGame.TeamColor.CHAOS, ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS),
+            Arrays.asList(ChessGame.TeamColor.CHAOS, ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS),
+            Arrays.asList(ChessGame.TeamColor.WHITE, ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE),
+            Arrays.asList(ChessGame.TeamColor.WHITE, ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE)
+        );
     ;
     public ChessBoard() {
-
+        resetBoard();
     }
 
     /**
@@ -45,7 +52,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        Board.get(position.getRow()).set(position.getColumn(), piece);
+        Board.get(position.getRow()).set(position.getColumn(), piece.getActual());
     }
 
     /**
@@ -59,11 +66,40 @@ public class ChessBoard {
         return Board.get(position.getRow()).get(position.getColumn());
     }
 
+    public void wipeBoard(){
+        Board = Arrays.asList(
+                Arrays.asList(null, null, null, null, null, null, null, null),
+                Arrays.asList(null, null, null, null, null, null, null, null),
+                Arrays.asList(null, null, null, null, null, null, null, null),
+                Arrays.asList(null, null, null, null, null, null, null, null),
+                Arrays.asList(null, null, null, null, null, null, null, null),
+                Arrays.asList(null, null, null, null, null, null, null, null),
+                Arrays.asList(null, null, null, null, null, null, null, null),
+                Arrays.asList(null, null, null, null, null, null, null, null)
+        );
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-
+        int y = 0;
+        int x = 0;
+        wipeBoard();
+        for(List<ChessPiece> row : Board){
+            for(ChessPiece piece : row){
+                ChessPiece.PieceType pieceType = PieceSetup.get(y).get(x);
+                ChessGame.TeamColor teamColor = TeamSetup.get(y).get(x);
+                if(pieceType != null && teamColor != null){
+                    Board.get(y).set(x, new ChessPiece(teamColor, pieceType));
+                }else{
+                    Board.get(y).set(x, null);
+                }
+                x++;
+            }
+            x = 0;
+            y++;
+        }
     }
 }
