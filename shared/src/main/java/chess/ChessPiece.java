@@ -3,6 +3,7 @@ package chess;
 import chess.pieces.Pawn;
 
 import java.util.Collection;
+import java.util.Objects;
 
 
 /**
@@ -45,6 +46,19 @@ public class ChessPiece {
         return team;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece piece1 = (ChessPiece) o;
+        return piece == piece1.piece && Objects.equals(rules, piece1.rules) && team == piece1.team;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(piece, rules, team);
+    }
+
     /**
      * The various different chess piece options
      */
@@ -82,12 +96,10 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        for(var i : rules.pieceMoves(board, myPosition)){
-            System.out.println(i.getStartPosition().getRow());
-            System.out.println(i.getStartPosition().getColumn());
-            System.out.println(i.getEndPosition().getRow());
-            System.out.println(i.getEndPosition().getColumn());
+        Collection<ChessMove> moveList = rules.pieceMoves(board, myPosition);
+        for(var i : moveList){
+            System.out.println(i.getStartPosition().getRow() + " " + i.getStartPosition().getColumn() + " -> " + i.getEndPosition().getRow() + " " + i.getEndPosition().getColumn());
         }
-        return rules.pieceMoves(board, myPosition);
+        return moveList;
     }
 }

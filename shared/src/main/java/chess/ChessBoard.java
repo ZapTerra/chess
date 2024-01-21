@@ -9,6 +9,19 @@ import java.util.*;
  * signature of the existing methods.
  */
 public class ChessBoard {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessBoard that = (ChessBoard) o;
+        return height == that.height && width == that.width && maxFairyHeight == that.maxFairyHeight && maxFairyWidth == that.maxFairyWidth && Objects.equals(Board, that.Board) && Objects.equals(PieceSetup, that.PieceSetup) && Objects.equals(TeamSetup, that.TeamSetup);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(height, width, maxFairyHeight, maxFairyWidth, Board, PieceSetup, TeamSetup);
+    }
+
     public enum SpaceType {
         BLACK,
         WHITE,
@@ -52,7 +65,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        Board.get(width - position.getRow()).set(position.getColumn(), piece);
+        Board.get(position.getRow() - 1).set(position.getColumn() - 1, piece);
     }
 
     /**
