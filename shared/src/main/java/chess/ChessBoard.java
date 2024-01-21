@@ -42,7 +42,7 @@ public class ChessBoard {
         );
     ;
     public ChessBoard() {
-        resetBoard();
+        wipeBoard();
     }
 
     /**
@@ -52,7 +52,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        Board.get(position.getRow()).set(position.getColumn(), piece.getActual());
+        Board.get(width - position.getRow()).set(position.getColumn(), piece);
     }
 
     /**
@@ -63,7 +63,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return Board.get(position.getRow()).get(position.getColumn());
+        return Board.get(position.getRow() - 1).get(position.getColumn() - 1);
     }
 
     public void wipeBoard(){

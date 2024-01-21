@@ -12,25 +12,37 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    public PieceType piece;
-    public ChessGame.TeamColor team;
+    private PieceType piece;
+    private PieceRules rules;
+    private ChessGame.TeamColor team;
 
     public ChessPiece(){
         team = ChessGame.TeamColor.WHITE;
         piece = PieceType.PAWN;
-        OnCreate();
+        rules = new Pawn(this);
     }
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         team = pieceColor;
         piece = type;
-        OnCreate();
+        if(type == PieceType.PAWN){
+            rules = new Pawn(this);
+        }
     }
 
-    public ChessPiece getActual(){
-        if(piece == PieceType.PAWN){
-            return new Pawn(team);
-        }
-        return null;
+    public void setPiece(PieceType piece){
+        this.piece = piece;
+    }
+
+    public PieceType getPiece(){
+        return piece;
+    }
+
+    public void setTeam(ChessGame.TeamColor teamColor){
+        this.team = teamColor;
+    }
+
+    public ChessGame.TeamColor getTeam(){
+        return team;
     }
 
     /**
@@ -46,16 +58,6 @@ public class ChessPiece {
         PAWN,
         MOLEMAN,
         SQUIRREL
-    }
-
-    public enum Team {
-        BLACK,
-        WHITE,
-        GRAVY
-    }
-
-    public void OnCreate(){
-
     }
 
     /**
@@ -80,6 +82,12 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return null;
+        for(var i : rules.pieceMoves(board, myPosition)){
+            System.out.println(i.getStartPosition().getRow());
+            System.out.println(i.getStartPosition().getColumn());
+            System.out.println(i.getEndPosition().getRow());
+            System.out.println(i.getEndPosition().getColumn());
+        }
+        return rules.pieceMoves(board, myPosition);
     }
 }
