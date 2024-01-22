@@ -1,6 +1,6 @@
 package chess;
 
-import chess.pieces.Pawn;
+import chess.pieces.*;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -27,6 +27,15 @@ public class ChessPiece {
         piece = type;
         if(type == PieceType.PAWN){
             rules = new Pawn(this);
+        }
+        if(type == PieceType.BISHOP){
+            rules = new Bishop(this);
+        }
+        if(type == PieceType.ROOK){
+            rules = new Rook(this);
+        }
+        if(type == PieceType.QUEEN){
+            rules = new Queen(this);
         }
     }
 
