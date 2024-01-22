@@ -28,11 +28,17 @@ public class ChessPiece {
         if(type == PieceType.PAWN){
             rules = new Pawn(this);
         }
+        if(type == PieceType.KNIGHT){
+            rules = new Knight(this);
+        }
         if(type == PieceType.BISHOP){
             rules = new Bishop(this);
         }
         if(type == PieceType.ROOK){
             rules = new Rook(this);
+        }
+        if(type == PieceType.KING){
+            rules = new King(this);
         }
         if(type == PieceType.QUEEN){
             rules = new Queen(this);
