@@ -1,7 +1,5 @@
 package chess;
 
-import chess.pieces.*;
-
 import java.util.Collection;
 import java.util.Objects;
 
