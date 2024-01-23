@@ -64,7 +64,7 @@ public class ChessPiece {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessPiece piece1 = (ChessPiece) o;
-        return piece == piece1.piece && Objects.equals(rules, piece1.rules) && team == piece1.team;
+        return piece == piece1.piece && team == piece1.team;
     }
 
     @Override
@@ -72,9 +72,20 @@ public class ChessPiece {
         return Objects.hash(piece, rules, team);
     }
 
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "piece=" + piece +
+                ", rules=" + rules +
+                ", team=" + team +
+                '}';
+    }
+
     /**
      * The various different chess piece options
      */
+
+
 
     public enum PieceType {
         KING,
@@ -84,7 +95,7 @@ public class ChessPiece {
         ROOK,
         PAWN,
         MOLEMAN,
-        SQUIRREL
+        SQUIRREL;
     }
 
     /**

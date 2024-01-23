@@ -9,6 +9,7 @@ import java.util.*;
  * signature of the existing methods.
  */
 public class ChessBoard {
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -20,6 +21,19 @@ public class ChessBoard {
     @Override
     public int hashCode() {
         return Objects.hash(height, width, maxFairyHeight, maxFairyWidth, Board, PieceSetup, TeamSetup);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessBoard{" +
+                "height=" + height +
+                ", width=" + width +
+                ", maxFairyHeight=" + maxFairyHeight +
+                ", maxFairyWidth=" + maxFairyWidth +
+                ", Board=" + Board +
+                ", PieceSetup=" + PieceSetup +
+                ", TeamSetup=" + TeamSetup +
+                '}';
     }
 
     public enum SpaceType {
@@ -46,10 +60,10 @@ public class ChessBoard {
     public List<List<ChessGame.TeamColor>> TeamSetup = Arrays.asList(
             Arrays.asList(ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK),
             Arrays.asList(ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK, ChessGame.TeamColor.BLACK),
-            Arrays.asList(ChessGame.TeamColor.CHAOS, ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS),
-            Arrays.asList(ChessGame.TeamColor.CHAOS, ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS),
-            Arrays.asList(ChessGame.TeamColor.CHAOS, ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS),
-            Arrays.asList(ChessGame.TeamColor.CHAOS, ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS,ChessGame.TeamColor.CHAOS),
+            Arrays.asList(null, null, null, null, null, null, null, null),
+            Arrays.asList(null, null, null, null, null, null, null, null),
+            Arrays.asList(null, null, null, null, null, null, null, null),
+            Arrays.asList(null, null, null, null, null, null, null, null),
             Arrays.asList(ChessGame.TeamColor.WHITE, ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE),
             Arrays.asList(ChessGame.TeamColor.WHITE, ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE,ChessGame.TeamColor.WHITE)
         );
@@ -97,7 +111,7 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        int y = 0;
+        int y = 7;
         int x = 0;
         wipeBoard();
         for(List<ChessPiece> row : Board){
@@ -105,14 +119,14 @@ public class ChessBoard {
                 ChessPiece.PieceType pieceType = PieceSetup.get(y).get(x);
                 ChessGame.TeamColor teamColor = TeamSetup.get(y).get(x);
                 if(pieceType != null && teamColor != null){
-                    Board.get(y).set(x, new ChessPiece(teamColor, pieceType));
+                    Board.get(7 - y).set(x, new ChessPiece(teamColor, pieceType));
                 }else{
-                    Board.get(y).set(x, null);
+                    Board.get(7 - y).set(x, null);
                 }
                 x++;
             }
             x = 0;
-            y++;
+            y--;
         }
     }
 }
