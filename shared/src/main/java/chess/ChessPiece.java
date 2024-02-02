@@ -1,8 +1,8 @@
 package chess;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
-
 
 /**
  * Represents a single chess piece
@@ -11,82 +11,30 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    private PieceType piece;
-    private PieceRules rules;
-    private ChessGame.TeamColor team;
+    public ChessGame.TeamColor color;
+    public PieceType type;
 
-    public ChessPiece(){
-        team = ChessGame.TeamColor.WHITE;
-        piece = PieceType.PAWN;
-        rules = new Pawn(this);
-    }
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        team = pieceColor;
-        piece = type;
-        if(type == PieceType.PAWN){
-            rules = new Pawn(this);
-        }
-        if(type == PieceType.KNIGHT){
-            rules = new Knight(this);
-        }
-        if(type == PieceType.BISHOP){
-            rules = new Bishop(this);
-        }
-        if(type == PieceType.ROOK){
-            rules = new Rook(this);
-        }
-        if(type == PieceType.KING){
-            rules = new King(this);
-        }
-        if(type == PieceType.QUEEN){
-            rules = new Queen(this);
-        }
-    }
-
-    public void setPiece(PieceType piece){
-        this.piece = piece;
-    }
-
-    public PieceType getPiece(){
-        return piece;
-    }
-
-    public void setTeam(ChessGame.TeamColor teamColor){
-        this.team = teamColor;
-    }
-
-    public ChessGame.TeamColor getTeam(){
-        return team;
+        this.color = pieceColor;
+        this.type = type;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ChessPiece piece1 = (ChessPiece) o;
-        return piece == piece1.piece && team == piece1.team;
+        ChessPiece piece = (ChessPiece) o;
+        return color == piece.color && type == piece.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(piece, rules, team);
-    }
-
-    @Override
-    public String toString() {
-        return "ChessPiece{" +
-                "piece=" + piece +
-                ", rules=" + rules +
-                ", team=" + team +
-                '}';
+        return Objects.hash(color, type);
     }
 
     /**
      * The various different chess piece options
      */
-
-
-
     public enum PieceType {
         KING,
         QUEEN,
@@ -94,22 +42,20 @@ public class ChessPiece {
         KNIGHT,
         ROOK,
         PAWN,
-        MOLEMAN,
-        SQUIRREL;
     }
 
     /**
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        return team;
+        return color;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        return piece;
+        return type;
     }
 
     /**
@@ -119,11 +65,25 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moveList = rules.pieceMoves(board, myPosition);
-        for(var i : moveList){
-            System.out.println(i.getStartPosition().getRow() + " " + i.getStartPosition().getColumn() + " -> " + i.getEndPosition().getRow() + " " + i.getEndPosition().getColumn());
+    public List<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        if(type == PieceType.PAWN){
+            return ChessRules.Pawn(board, color, myPosition);
         }
-        return moveList;
+        if(type == PieceType.ROOK){
+            return ChessRules.Rook(board, color, myPosition);
+        }
+        if(type == PieceType.BISHOP){
+            return ChessRules.Bishop(board, color, myPosition);
+        }
+        if(type == PieceType.QUEEN){
+            return ChessRules.Queen(board, color, myPosition);
+        }
+        if(type == PieceType.KNIGHT){
+            return ChessRules.Knight(board, color, myPosition);
+        }
+        if(type == PieceType.KING){
+            return ChessRules.King(board, color, myPosition);
+        }
+        return null;
     }
 }
