@@ -165,6 +165,28 @@ public class ChessGame {
         }
     }
 
+    public List<ChessMove> allTeamMoves(TeamColor teamColor){
+        var whoseTurnItActuallyShouldBeRightNow = activeTeam;
+        activeTeam = teamColor;
+        var yPos = 8;
+        var xPos = 1;
+        var allMoves = new ArrayList<ChessMove>();
+        System.out.println("Getting all moves: " + teamColor);
+        for(var y : gameBoard.board){
+            xPos = 1;
+            for(var x : y){
+                if(x != null && x.getTeamColor() == teamColor){
+                    System.out.println(x.getPieceType());
+                    var moves = x.pieceMoves(gameBoard, new ChessPosition(yPos, xPos));
+                    allMoves.addAll(moves);
+                }
+                xPos++;
+            }
+            yPos--;
+        }
+        activeTeam = whoseTurnItActuallyShouldBeRightNow;
+        return allMoves;
+    }
 
 ;    /**
      * Determines if the given team is in check
@@ -177,30 +199,19 @@ public class ChessGame {
         if(kingCoords == null){
             return false;
         }
-        var yPos = 8;
-        var xPos = 1;
-        var allMoves = new ArrayList<ChessMove>();
-        System.out.println("Testing enemy moves:");
-        for(var y : gameBoard.board){
-            xPos = 1;
-            for(var x : y){
-                if(x != null && x.getTeamColor() != teamColor){
-                    System.out.println(x.getPieceType());
-                    var moves = x.pieceMoves(gameBoard, new ChessPosition(yPos, xPos));
-                    allMoves.addAll(moves);
-                }
-                xPos++;
-            }
-            yPos--;
+
+        var enemyMoves = new ArrayList<ChessMove>();
+        for(TeamColor color : TeamColor.values()){
+            enemyMoves.addAll(allTeamMoves(color));
         }
-        for(ChessMove move : allMoves){
+
+        for(ChessMove move : enemyMoves){
             if(move.getEndPosition().getRow() == kingCoords.getRow() && move.getEndPosition().getColumn() == kingCoords.getColumn()){
                 return true;
             }
         }
         return false;
     }
-
 
     /**
      * Determines if the given team is in checkmate
@@ -209,7 +220,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return isInStalemate(teamColor);
     }
 
 
@@ -223,24 +234,16 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         var whoseTurnItActuallyShouldBeRightNow = activeTeam;
         activeTeam = teamColor;
-        var yPos = 8;
-        var xPos = 1;
-        var allMoves = new ArrayList<ChessMove>();
-        System.out.println("Testing enemy moves:");
-        for(var y : gameBoard.board){
-            xPos = 1;
-            for(var x : y){
-                if(x != null && x.getTeamColor() == teamColor){
-                    System.out.println(x.getPieceType());
-                    var moves = validMoves(new ChessPosition(yPos, xPos));
-                    allMoves.addAll(moves);
-                }
-                xPos++;
+        var uncheckedMoves = allTeamMoves(teamColor);
+        var legalMoves = new ArrayList<ChessMove>();
+        boolean stalemate = true;
+        for(var move : uncheckedMoves){
+            if(validMove(move)){
+                stalemate = false;
             }
-            yPos--;
         }
         activeTeam = whoseTurnItActuallyShouldBeRightNow;
-        return allMoves.isEmpty();
+        return stalemate;
     }
 
 
