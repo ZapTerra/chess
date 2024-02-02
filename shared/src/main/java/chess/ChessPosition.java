@@ -33,7 +33,7 @@ public class ChessPosition {
     }
 
     public boolean validPosition(){
-        return !(8 < getRow() || getRow() < 0 || 8 < getColumn() || getColumn() < 0);
+        return 0 < getRow() && getRow() < 9 && 0 < getColumn() && getColumn() < 9;
     }
 
     @Override

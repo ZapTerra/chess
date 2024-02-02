@@ -20,7 +20,6 @@ public class ChessGame {
 
     public ChessGame() {
 
-
     }
 
 
@@ -90,24 +89,43 @@ public class ChessGame {
     }
 
     public boolean validMove(ChessMove move){
+        return validMove(move, false);
+    }
+    public boolean validMove(ChessMove move, boolean takeTheShot){
         System.out.println("Testing move: " + move.getStartPosition().getRow() + " " + move.getStartPosition().getColumn() + " -> " + move.getEndPosition().getRow() + " " + move.getEndPosition().getColumn());
+
         var startPos = move.getStartPosition();
         if(!startPos.validPosition()){
             System.out.println("Invalid start position.");
             return false;
         }
+
         var startPiece = gameBoard.getPiece(startPos);
         if(startPiece == null){
-            System.out.println("Null piece.");
+            System.out.println("Piece not found at position.");
             return false;
         }
+
         var teamColor = startPiece.getTeamColor();
+//        if(teamColor != getTeamTurn()){
+//            System.out.println("It's not your turn.");
+//            return false;
+//        }
 
         var endPos = move.getEndPosition();
         if(!endPos.validPosition()){
             System.out.println("Invalid end position.");
             return false;
         }
+
+        System.out.println("Testing if the piece is a coward:");
+        if(!startPiece.pieceMoves(gameBoard, startPos).contains(move)){
+            System.out.println("It is.");
+            return false;
+        }else{
+            System.out.println("It's not.");
+        }
+
         var killedPiece = gameBoard.getPiece(endPos);
 
         var endPieceType = move.getPromotionPiece() != null ? move.getPromotionPiece() : startPiece.getPieceType();
@@ -116,19 +134,20 @@ public class ChessGame {
         gameBoard.addPiece(endPos, endPiece);
         gameBoard.addPiece(startPos, null);
 
-        boolean moveIsValid = true;
-
+        boolean validMove = true;
         if(isInCheck(teamColor)){
             System.out.println("It does.");
-            moveIsValid = false;
+            validMove = false;
         }else{
             System.out.println("It doesn't.");
         }
 
-        gameBoard.addPiece(endPos, killedPiece);
-        gameBoard.addPiece(startPos, startPiece);
+        if(!(takeTheShot && validMove)){
+            gameBoard.addPiece(endPos, killedPiece);
+            gameBoard.addPiece(startPos, startPiece);
+        }
 
-        return moveIsValid;
+        return validMove;
     }
 
 
@@ -139,36 +158,13 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        var startPos = move.getStartPosition();
-        if(!startPos.validPosition()){
-            throw new InvalidMoveException();
-        }
-        var startPiece = gameBoard.getPiece(startPos);
-        if(startPiece == null){
-            throw new InvalidMoveException();
-        }
-        var teamColor = startPiece.getTeamColor();
-
-        var endPos = move.getEndPosition();
-        if(!endPos.validPosition()){
-            throw new InvalidMoveException();
-        }
-        var killedPiece = gameBoard.getPiece(endPos);
-
-        var endPieceType = move.getPromotionPiece() != null ? move.getPromotionPiece() : startPiece.getPieceType();
-        var endPiece = new ChessPiece(teamColor, endPieceType);
-
-        gameBoard.addPiece(endPos, endPiece);
-        gameBoard.addPiece(startPos, null);
-        if(isInCheck(teamColor)){
-            gameBoard.addPiece(endPos, killedPiece);
-            gameBoard.addPiece(startPos, startPiece);
+        if(!validMove(move, true)) {
             throw new InvalidMoveException();
         }
     }
 
 
-    /**
+;    /**
      * Determines if the given team is in check
      *
      * @param teamColor which team to check for check
@@ -223,7 +219,23 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        var yPos = 8;
+        var xPos = 1;
+        var allMoves = new ArrayList<ChessMove>();
+        System.out.println("Testing enemy moves:");
+        for(var y : gameBoard.board){
+            xPos = 1;
+            for(var x : y){
+                if(x != null && x.getTeamColor() == teamColor){
+                    System.out.println(x.getPieceType());
+                    var moves = validMoves(new ChessPosition(yPos, xPos));
+                    allMoves.addAll(moves);
+                }
+                xPos++;
+            }
+            yPos--;
+        }
+        return allMoves.isEmpty();
     }
 
 
