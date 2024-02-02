@@ -13,7 +13,7 @@ import java.util.List;
  * signature of the existing methods.
  */
 public class ChessGame {
-    private TeamColor activeTeam;
+    private TeamColor activeTeam = null;
     private List<List<List<ChessPiece>>> boardHistory;
     private ChessBoard gameBoard;
 
@@ -107,10 +107,10 @@ public class ChessGame {
         }
 
         var teamColor = startPiece.getTeamColor();
-//        if(teamColor != getTeamTurn()){
-//            System.out.println("It's not your turn.");
-//            return false;
-//        }
+        if(activeTeam != null && teamColor != getTeamTurn()){
+            System.out.println("It's not your turn.");
+            return false;
+        }
 
         var endPos = move.getEndPosition();
         if(!endPos.validPosition()){
@@ -160,6 +160,8 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         if(!validMove(move, true)) {
             throw new InvalidMoveException();
+        }else{
+            activeTeam = activeTeam == TeamColor.BLACK ? TeamColor.WHITE : TeamColor.BLACK;
         }
     }
 
@@ -219,6 +221,8 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        var whoseTurnItActuallyShouldBeRightNow = activeTeam;
+        activeTeam = teamColor;
         var yPos = 8;
         var xPos = 1;
         var allMoves = new ArrayList<ChessMove>();
@@ -235,6 +239,7 @@ public class ChessGame {
             }
             yPos--;
         }
+        activeTeam = whoseTurnItActuallyShouldBeRightNow;
         return allMoves.isEmpty();
     }
 
