@@ -1,9 +1,6 @@
 package chess;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -75,7 +72,6 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         var board = getGameBoard();
         final List<ChessMove> allMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
-        System.out.println(board.getPiece(startPosition).getPieceType());
         var legalMoves = new ArrayList<ChessMove>();
 
         var allMovesCopy = new ArrayList<>(allMoves);
@@ -92,8 +88,6 @@ public class ChessGame {
         return validMove(move, false);
     }
     public boolean validMove(ChessMove move, boolean takeTheShot){
-        System.out.println("Testing move: " + move.getStartPosition().getRow() + " " + move.getStartPosition().getColumn() + " -> " + move.getEndPosition().getRow() + " " + move.getEndPosition().getColumn());
-
         var startPos = move.getStartPosition();
         if(!startPos.validPosition()){
             System.out.println("Invalid start position.");
@@ -105,6 +99,9 @@ public class ChessGame {
             System.out.println("Piece not found at position.");
             return false;
         }
+
+        String name = startPiece.getPieceType().toString().toLowerCase();
+        name = name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
 
         var teamColor = startPiece.getTeamColor();
         if(activeTeam != null && teamColor != getTeamTurn()){
@@ -118,28 +115,24 @@ public class ChessGame {
             return false;
         }
 
-        System.out.println("Testing if the piece is a coward:");
         if(!startPiece.pieceMoves(gameBoard, startPos).contains(move)){
-            System.out.println("It is.");
+            System.out.println("The " + name + " is afraid of what the other pieces might think if it makes that move.");
             return false;
         }else{
-            System.out.println("It's not.");
+            System.out.println("The " + name + " is not a coward.");
         }
 
         var killedPiece = gameBoard.getPiece(endPos);
 
         var endPieceType = move.getPromotionPiece() != null ? move.getPromotionPiece() : startPiece.getPieceType();
         var endPiece = new ChessPiece(teamColor, endPieceType);
-        System.out.println("Testing if move keeps/puts team in check:");
         gameBoard.addPiece(endPos, endPiece);
         gameBoard.addPiece(startPos, null);
 
         boolean validMove = true;
         if(isInCheck(teamColor)){
-            System.out.println("It does.");
+            System.out.println("The " + name + " is too loyal to the king to do that.");
             validMove = false;
-        }else{
-            System.out.println("It doesn't.");
         }
 
         if(!(takeTheShot && validMove)){
@@ -171,12 +164,10 @@ public class ChessGame {
         var yPos = 8;
         var xPos = 1;
         var allMoves = new ArrayList<ChessMove>();
-        System.out.println("Getting all moves: " + teamColor);
         for(var y : gameBoard.board){
             xPos = 1;
             for(var x : y){
                 if(x != null && x.getTeamColor() == teamColor){
-                    System.out.println(x.getPieceType());
                     var moves = x.pieceMoves(gameBoard, new ChessPosition(yPos, xPos));
                     allMoves.addAll(moves);
                 }
@@ -273,7 +264,6 @@ public class ChessGame {
             xPos = 1;
             for(var x : y){
                 if(x != null && x.getPieceType() == ChessPiece.PieceType.KING && x.getTeamColor() == color){
-                    System.out.println("King is at " + yPos + " " + xPos);
                     return new ChessPosition(yPos, xPos);
                 }
                 xPos++;
