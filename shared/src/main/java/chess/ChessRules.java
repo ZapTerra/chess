@@ -31,7 +31,7 @@ public class ChessRules {
                 ChessPosition passantVacancy = new ChessPosition(position.getRow() + direction * 2, position.getColumn() + i);
                 if(killPosition.validPosition()){
                     boolean laBrutalite = board.getPiece(enPassant) != null && board.getPiece(enPassant).getTeamColor() != color;
-                    if(laBrutalite){
+                    if(laBrutalite && board.boardHistory.size() > 1){
                         var lastTurn = board.boardHistory.get(board.boardHistory.size() - 2);
                         var spotLastTurn = lastTurn.get(8 - passantVacancy.getRow()).get(passantVacancy.getColumn() - 1);
                         var adjacentPieceThisTurn = board.getPiece(enPassant);
@@ -198,14 +198,18 @@ public class ChessRules {
     public static boolean rookIsGood(ChessBoard board, ChessPosition position, int pathStartIndex, int pathEndIndex, int rookColumn){
         var rookPos = new ChessPosition(position.getRow(), rookColumn);
         var piece = board.getPiece(rookPos);
-        if(piece != null && piece.getPieceType() == ChessPiece.PieceType.ROOK){
-            if(board.pieceHasMoved(board, rookPos)){
+        if(piece == null){
+            return false;
+        }
+        if(piece.getPieceType() != ChessPiece.PieceType.ROOK) {
+            return false;
+        }
+        if(board.pieceHasMoved(board, rookPos)){
+            return false;
+        }
+        for(int i = pathStartIndex; i <= pathEndIndex; i++){
+            if(board.getPiece(new ChessPosition(position.getRow(), i)) != null){
                 return false;
-            }
-            for(int i = pathStartIndex; i <= pathEndIndex; i++){
-                if(board.getPiece(new ChessPosition(position.getRow(), i)) != null){
-                    return false;
-                }
             }
         }
         return true;
