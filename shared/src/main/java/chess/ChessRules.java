@@ -1,12 +1,10 @@
 package chess;
-
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 public class ChessRules {
-    private static ArrayList<ChessMove> moves = new ArrayList<>();
-    private static ArrayList<ChessPosition> positions = new ArrayList<>();
+    private static final ArrayList<ChessMove> moves = new ArrayList<>();
+    private static final ArrayList<ChessPosition> positions = new ArrayList<>();
 
     public static ArrayList<ChessMove> Pawn(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
         moves.clear();
@@ -63,7 +61,7 @@ public class ChessRules {
         };
 
         int[] startPos = new int[]{position.getRow(), position.getColumn()};
-        int[] iterPos = startPos.clone();
+        int[] iterPos;
         for(int[] dir : moveDirections){
             iterPos = startPos.clone();
             do{

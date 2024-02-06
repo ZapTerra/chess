@@ -3,7 +3,6 @@ package chess;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.lang.reflect.Array;
 import java.util.Objects;
 
 /**
@@ -123,7 +122,7 @@ public class ChessBoard {
      */
     public void resetBoard() {
         int y = 0;
-        int x = 0;
+        int x;
         for(var currentRow : regularSetup){
             x = 0;
             for(var space : currentRow){

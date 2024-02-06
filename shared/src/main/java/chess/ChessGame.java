@@ -3,8 +3,6 @@ package chess;
 import java.util.*;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.signum;
-
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -232,7 +230,7 @@ public class ChessGame {
         return false;
     }
 
-;    /**
+    /**
      * Determines if the given team is in check
      *
      * @param teamColor which team to check for check
@@ -264,7 +262,6 @@ public class ChessGame {
         var whoseTurnItActuallyShouldBeRightNow = activeTeam;
         activeTeam = teamColor;
         var uncheckedMoves = allTeamMoves(teamColor);
-        var legalMoves = new ArrayList<ChessMove>();
         boolean stalemate = true;
         for(var move : uncheckedMoves){
             if(validMove(move)){
