@@ -38,7 +38,6 @@ public class ChessRules {
                         if(adjacentPieceThisTurn != null && adjacentPieceThisTurn.getPieceType() == ChessPiece.PieceType.PAWN && board.getPiece(killPosition) == null && spotLastTurn != null && spotLastTurn.getPieceType() == ChessPiece.PieceType.PAWN){
                             positions.add(killPosition);
                         }
-                        System.out.println("look ma i changed the code so i can push");
                     }
                     if(board.getPiece(killPosition) != null && board.getPiece(killPosition).getTeamColor() != color){
                         positions.add(killPosition);
