@@ -93,7 +93,7 @@ public class ChessRules {
         };
 
         int[] startPos = new int[]{position.getRow(), position.getColumn()};
-        int[] iterPos = startPos.clone();
+        int[] iterPos;
         for(int[] dir : moveDirections){
             iterPos = startPos.clone();
                 do{
@@ -129,7 +129,7 @@ public class ChessRules {
         };
 
         int[] startPos = new int[]{position.getRow(), position.getColumn()};
-        int[] iterPos = startPos.clone();
+        int[] iterPos;
         for(int[] dir : moveDirections){
             iterPos = startPos.clone();
             iterPos[0] += dir[0];
@@ -163,7 +163,7 @@ public class ChessRules {
         };
 
         int[] startPos = new int[]{position.getRow(), position.getColumn()};
-        int[] iterPos = startPos.clone();
+        int[] iterPos;
         for(int[] dir : moveDirections){
             iterPos = startPos.clone();
             do{
@@ -216,7 +216,7 @@ public class ChessRules {
         };
 
         int[] startPos = new int[]{position.getRow(), position.getColumn()};
-        int[] iterPos = startPos.clone();
+        int[] iterPos;
         for(int[] dir : moveDirections){
             iterPos = startPos.clone();
             iterPos[0] += dir[0];
