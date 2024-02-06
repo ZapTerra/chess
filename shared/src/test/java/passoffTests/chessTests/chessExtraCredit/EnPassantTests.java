@@ -51,7 +51,7 @@ public class EnPassantTests {
 
         //set up game
         ChessGame game = TestFactory.getNewGame();
-        game.setGameBoard(chessBoard);
+        game.setBoard(chessBoard);
         game.setTeamTurn(ChessGame.TeamColor.BLACK);
 
         //move black piece 2 spaces
@@ -75,11 +75,11 @@ public class EnPassantTests {
 
         //en passant move works correctly
         Assertions.assertDoesNotThrow(() -> game.makeMove(enPassantMove));
-        Assertions.assertNull(game.getGameBoard().getPiece(TestFactory.getNewPosition(5, 2)),
+        Assertions.assertNull(game.getBoard().getPiece(TestFactory.getNewPosition(5, 2)),
                 "After En Passant move, piece still present at original position");
-        Assertions.assertNull(game.getGameBoard().getPiece(TestFactory.getNewPosition(5, 3)),
+        Assertions.assertNull(game.getBoard().getPiece(TestFactory.getNewPosition(5, 3)),
                 "After En Passant move, piece still present at taken pawn position");
-        ChessPiece foundPawn = game.getGameBoard().getPiece(TestFactory.getNewPosition(6, 3));
+        ChessPiece foundPawn = game.getBoard().getPiece(TestFactory.getNewPosition(6, 3));
         Assertions.assertNotNull(foundPawn, "After En Passant move, no piece present at final position");
         Assertions.assertEquals(ChessPiece.PieceType.PAWN, foundPawn.getPieceType(),
                 "Found piece at pawn's position is not a pawn");
@@ -114,7 +114,7 @@ public class EnPassantTests {
 
         //set up game
         ChessGame game = TestFactory.getNewGame();
-        game.setGameBoard(chessBoard);
+        game.setBoard(chessBoard);
         game.setTeamTurn(ChessGame.TeamColor.BLACK);
 
         //move black piece 2 spaces
@@ -138,11 +138,11 @@ public class EnPassantTests {
 
         //en passant move works correctly
         Assertions.assertDoesNotThrow(() -> game.makeMove(enPassantMove));
-        Assertions.assertNull(game.getGameBoard().getPiece(TestFactory.getNewPosition(5, 4)),
+        Assertions.assertNull(game.getBoard().getPiece(TestFactory.getNewPosition(5, 4)),
                 "After En Passant move, piece still present at original position");
-        Assertions.assertNull(game.getGameBoard().getPiece(TestFactory.getNewPosition(5, 3)),
+        Assertions.assertNull(game.getBoard().getPiece(TestFactory.getNewPosition(5, 3)),
                 "After En Passant move, piece still present at taken pawn position");
-        ChessPiece foundPawn = game.getGameBoard().getPiece(TestFactory.getNewPosition(6, 3));
+        ChessPiece foundPawn = game.getBoard().getPiece(TestFactory.getNewPosition(6, 3));
         Assertions.assertNotNull(foundPawn, "After En Passant move, no piece present at final position");
         Assertions.assertEquals(ChessPiece.PieceType.PAWN, foundPawn.getPieceType(),
                 "Found piece at pawn's position is not a pawn");
@@ -177,7 +177,7 @@ public class EnPassantTests {
 
         //set up game
         ChessGame game = TestFactory.getNewGame();
-        game.setGameBoard(chessBoard);
+        game.setBoard(chessBoard);
         game.setTeamTurn(ChessGame.TeamColor.WHITE);
 
         //move white piece 2 spaces
@@ -201,11 +201,11 @@ public class EnPassantTests {
 
         //en passant move works correctly
         Assertions.assertDoesNotThrow(() -> game.makeMove(enPassantMove));
-        Assertions.assertNull(game.getGameBoard().getPiece(TestFactory.getNewPosition(4, 6)),
+        Assertions.assertNull(game.getBoard().getPiece(TestFactory.getNewPosition(4, 6)),
                 "After En Passant move, piece still present at original position");
-        Assertions.assertNull(game.getGameBoard().getPiece(TestFactory.getNewPosition(4, 7)),
+        Assertions.assertNull(game.getBoard().getPiece(TestFactory.getNewPosition(4, 7)),
                 "After En Passant move, piece still present at taken pawn position");
-        ChessPiece foundPawn = game.getGameBoard().getPiece(TestFactory.getNewPosition(3, 7));
+        ChessPiece foundPawn = game.getBoard().getPiece(TestFactory.getNewPosition(3, 7));
         Assertions.assertNotNull(foundPawn, "After En Passant move, no piece present at final position");
         Assertions.assertEquals(ChessPiece.PieceType.PAWN, foundPawn.getPieceType(),
                 "Found piece at pawn's position is not a pawn");
@@ -240,7 +240,7 @@ public class EnPassantTests {
 
         //set up game
         ChessGame game = TestFactory.getNewGame();
-        game.setGameBoard(chessBoard);
+        game.setBoard(chessBoard);
         game.setTeamTurn(ChessGame.TeamColor.WHITE);
 
         //move white piece 2 spaces
@@ -264,11 +264,11 @@ public class EnPassantTests {
 
         //en passant move works correctly
         Assertions.assertDoesNotThrow(() -> game.makeMove(enPassantMove));
-        Assertions.assertNull(game.getGameBoard().getPiece(TestFactory.getNewPosition(4, 8)),
+        Assertions.assertNull(game.getBoard().getPiece(TestFactory.getNewPosition(4, 8)),
                 "After En Passant move, piece still present at original position");
-        Assertions.assertNull(game.getGameBoard().getPiece(TestFactory.getNewPosition(4, 7)),
+        Assertions.assertNull(game.getBoard().getPiece(TestFactory.getNewPosition(4, 7)),
                 "After En Passant move, piece still present at taken pawn position");
-        ChessPiece foundPawn = game.getGameBoard().getPiece(TestFactory.getNewPosition(3, 7));
+        ChessPiece foundPawn = game.getBoard().getPiece(TestFactory.getNewPosition(3, 7));
         Assertions.assertNotNull(foundPawn, "After En Passant move, no piece present at final position");
         Assertions.assertEquals(ChessPiece.PieceType.PAWN, foundPawn.getPieceType(),
                 "Found piece at pawn's position is not a pawn");
@@ -309,7 +309,7 @@ public class EnPassantTests {
 
         //set up game
         ChessGame game = TestFactory.getNewGame();
-        game.setGameBoard(chessBoard);
+        game.setBoard(chessBoard);
         game.setTeamTurn(ChessGame.TeamColor.BLACK);
 
         //move black piece 2 spaces

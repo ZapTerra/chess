@@ -69,7 +69,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        var board = getGameBoard();
+        var board = getBoard();
         final List<ChessMove> allMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
         var legalMoves = new ArrayList<ChessMove>();
 
@@ -90,13 +90,13 @@ public class ChessGame {
     public boolean validMove(ChessMove move, boolean takeTheShot){
         var startPos = move.getStartPosition();
         if(!startPos.validPosition()){
-            System.out.println("Invalid start position.");
+            //System.out.println("Invalid start position.");
             return false;
         }
 
         var startPiece = gameBoard.getPiece(startPos);
         if(startPiece == null){
-            System.out.println("Piece not found at position.");
+            //System.out.println("Piece not found at position.");
             return false;
         }
 
@@ -104,19 +104,19 @@ public class ChessGame {
         name = name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
 
         var teamColor = startPiece.getTeamColor();
-        if(activeTeam != null && teamColor != getTeamTurn()){
-            System.out.println("It's not your turn.");
+        if(activeTeam != null && teamColor != getTeamTurn() && takeTheShot){
+            //System.out.println("It's not your turn.");
             return false;
         }
 
         var endPos = move.getEndPosition();
         if(!endPos.validPosition()){
-            System.out.println("Invalid end position.");
+            //System.out.println("Invalid end position.");
             return false;
         }
 
         if(!startPiece.pieceMoves(gameBoard, startPos).contains(move)){
-            System.out.println("The " + name + " is afraid of what the other pieces might think if it makes that move.");
+            //System.out.println("The " + name + " is afraid of what the other pieces might think if it makes that move.");
             return false;
         }
 
@@ -136,7 +136,7 @@ public class ChessGame {
 
             for(int i = startPos.getColumn(); i != rookPos.getColumn(); i -= moveDir){
                 if(isUnderAttack(new ChessPosition(startPos.getRow(), i), teamColor)){
-                    System.out.println("The King refuses to change while a " + (teamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE) + " piece can see him.");
+                    //System.out.println("The King refuses to change while a " + (teamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE) + " piece can see him.");
                     return false;
                 }
             }
@@ -159,7 +159,7 @@ public class ChessGame {
 
         boolean validMove = true;
         if(isInCheck(teamColor)){
-            System.out.println("The " + name + " is too loyal to the King to do that.");
+            //System.out.println("The " + name + " is too loyal to the monarchy to do that.");
             validMove = false;
         }
 
@@ -176,7 +176,7 @@ public class ChessGame {
         }
 
         if(moveIsCastle && takeTheShot && validMove){
-            System.out.println("Castled!");
+            //System.out.println("Castled!");
         }
 
         return validMove;
@@ -194,7 +194,7 @@ public class ChessGame {
             throw new InvalidMoveException();
         }else{
             gameBoard.saveMove();
-            System.out.println(activeTeam + " took a turn!");
+            //System.out.println(activeTeam + " took a turn!");
             activeTeam = activeTeam == TeamColor.BLACK ? TeamColor.WHITE : TeamColor.BLACK;
         }
     }
@@ -288,7 +288,7 @@ public class ChessGame {
      *
      * @param gameBoard the new board to use
      */
-    public void setGameBoard(ChessBoard gameBoard) {
+    public void setBoard(ChessBoard gameBoard) {
         this.gameBoard = gameBoard;
         gameBoard.saveMove();
     }
@@ -299,7 +299,7 @@ public class ChessGame {
      *
      * @return the chessboard
      */
-    public ChessBoard getGameBoard() {
+    public ChessBoard getBoard() {
         return gameBoard;
     }
 
