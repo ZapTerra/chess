@@ -39,7 +39,6 @@ public class ChessRules {
                             positions.add(killPosition);
                         }
                     }
-                    //placehodl
                     if(board.getPiece(killPosition) != null && board.getPiece(killPosition).getTeamColor() != color){
                         positions.add(killPosition);
                     }
