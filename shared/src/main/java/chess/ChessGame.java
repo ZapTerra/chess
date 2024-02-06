@@ -2,6 +2,9 @@ package chess;
 
 import java.util.*;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.signum;
+
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -11,9 +14,7 @@ import java.util.*;
  */
 public class ChessGame {
     private TeamColor activeTeam = null;
-    private List<List<List<ChessPiece>>> boardHistory;
     private ChessBoard gameBoard;
-
 
     public ChessGame() {
 
@@ -87,6 +88,7 @@ public class ChessGame {
     public boolean validMove(ChessMove move){
         return validMove(move, false);
     }
+
     public boolean validMove(ChessMove move, boolean takeTheShot){
         var startPos = move.getStartPosition();
         if(!startPos.validPosition()){
@@ -118,11 +120,32 @@ public class ChessGame {
         if(!startPiece.pieceMoves(gameBoard, startPos).contains(move)){
             System.out.println("The " + name + " is afraid of what the other pieces might think if it makes that move.");
             return false;
-        }else{
-            System.out.println("The " + name + " is not a coward.");
         }
 
         var killedPiece = gameBoard.getPiece(endPos);
+
+        int lrMove = startPos.getColumn() - endPos.getColumn();
+        boolean moveIsCastle = startPiece.getPieceType() == ChessPiece.PieceType.KING && abs(lrMove) == 2;
+
+        ChessPiece rookPiece = null;
+        ChessPosition rookPos = null;
+        ChessPosition endRookPos = null;
+        if(moveIsCastle){
+            var moveDir =  lrMove / 2;
+            rookPiece = new ChessPiece(teamColor, ChessPiece.PieceType.ROOK);
+            rookPos = new ChessPosition(startPos.getRow(), lrMove > 0 ? 1 : 8);
+            endRookPos = new ChessPosition(startPos.getRow(), startPos.getColumn() - lrMove / 2);
+
+            for(int i = startPos.getColumn(); i != rookPos.getColumn(); i -= moveDir){
+                if(isUnderAttack(new ChessPosition(startPos.getRow(), i), teamColor)){
+                    System.out.println("The King refuses to change while a " + (teamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE) + " piece can see him.");
+                    return false;
+                }
+            }
+
+            gameBoard.addPiece(endRookPos, rookPiece);
+            gameBoard.addPiece(rookPos, null);
+        }
 
         var endPieceType = move.getPromotionPiece() != null ? move.getPromotionPiece() : startPiece.getPieceType();
         var endPiece = new ChessPiece(teamColor, endPieceType);
@@ -131,13 +154,21 @@ public class ChessGame {
 
         boolean validMove = true;
         if(isInCheck(teamColor)){
-            System.out.println("The " + name + " is too loyal to the king to do that.");
+            System.out.println("The " + name + " is too loyal to the King to do that.");
             validMove = false;
         }
 
         if(!(takeTheShot && validMove)){
             gameBoard.addPiece(endPos, killedPiece);
             gameBoard.addPiece(startPos, startPiece);
+            if(moveIsCastle){
+                gameBoard.addPiece(rookPos, rookPiece);
+                gameBoard.addPiece(endRookPos, null);
+            }
+        }
+
+        if(moveIsCastle && takeTheShot && validMove){
+            System.out.println("Castled!");
         }
 
         return validMove;
@@ -154,6 +185,8 @@ public class ChessGame {
         if(!validMove(move, true)) {
             throw new InvalidMoveException();
         }else{
+            gameBoard.saveMove();
+            System.out.println(activeTeam + " took a turn!");
             activeTeam = activeTeam == TeamColor.BLACK ? TeamColor.WHITE : TeamColor.BLACK;
         }
     }
@@ -179,6 +212,26 @@ public class ChessGame {
         return allMoves;
     }
 
+    public boolean isUnderAttack(ChessPosition pos, TeamColor teamColor){
+        if(pos == null){
+            return false;
+        }
+
+        var enemyMoves = new ArrayList<ChessMove>();
+        for(TeamColor color : TeamColor.values()){
+            if(color != teamColor){
+                enemyMoves.addAll(allTeamMoves(color));
+            }
+        }
+
+        for(ChessMove move : enemyMoves){
+            if(move.getEndPosition().getRow() == pos.getRow() && move.getEndPosition().getColumn() == pos.getColumn()){
+                return true;
+            }
+        }
+        return false;
+    }
+
 ;    /**
      * Determines if the given team is in check
      *
@@ -186,22 +239,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ChessPosition kingCoords = getKingPos(teamColor);
-        if(kingCoords == null){
-            return false;
-        }
-
-        var enemyMoves = new ArrayList<ChessMove>();
-        for(TeamColor color : TeamColor.values()){
-            enemyMoves.addAll(allTeamMoves(color));
-        }
-
-        for(ChessMove move : enemyMoves){
-            if(move.getEndPosition().getRow() == kingCoords.getRow() && move.getEndPosition().getColumn() == kingCoords.getColumn()){
-                return true;
-            }
-        }
-        return false;
+        return isUnderAttack(getKingPos(teamColor), teamColor);
     }
 
     /**
@@ -245,6 +283,7 @@ public class ChessGame {
      */
     public void setGameBoard(ChessBoard gameBoard) {
         this.gameBoard = gameBoard;
+        gameBoard.saveMove();
     }
 
 
