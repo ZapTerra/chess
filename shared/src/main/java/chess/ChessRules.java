@@ -27,7 +27,18 @@ public class ChessRules {
         for(int i = -1; i < 2; i++){
             if(i != 0){
                 ChessPosition killPosition = new ChessPosition(position.getRow() + direction, position.getColumn() + i);
+                ChessPosition enPassant = new ChessPosition(position.getRow(), position.getColumn() + i);
+                ChessPosition passantVacancy = new ChessPosition(position.getRow() + direction * 2, position.getColumn() + i);
                 if(killPosition.validPosition()){
+                    boolean laBrutalite = board.getPiece(enPassant) != null && board.getPiece(enPassant).getTeamColor() != color;
+                    if(laBrutalite){
+                        var lastTurn = board.boardHistory.get(board.boardHistory.size() - 2);
+                        var spotLastTurn = lastTurn.get(8 - passantVacancy.getRow()).get(passantVacancy.getColumn() - 1);
+                        var adjacentPieceThisTurn = board.getPiece(enPassant);
+                        if(adjacentPieceThisTurn != null && adjacentPieceThisTurn.getPieceType() == ChessPiece.PieceType.PAWN && board.getPiece(killPosition) == null && spotLastTurn != null && spotLastTurn.getPieceType() == ChessPiece.PieceType.PAWN){
+                            positions.add(killPosition);
+                        }
+                    }
                     if(board.getPiece(killPosition) != null && board.getPiece(killPosition).getTeamColor() != color){
                         positions.add(killPosition);
                     }

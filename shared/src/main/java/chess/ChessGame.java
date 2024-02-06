@@ -145,6 +145,13 @@ public class ChessGame {
             gameBoard.addPiece(rookPos, null);
         }
 
+        boolean enPassant = startPiece.getPieceType() == ChessPiece.PieceType.PAWN && killedPiece == null && startPos.getColumn() != endPos.getColumn();
+        var sceneDeCrime = new ChessPosition(startPos.getRow(), endPos.getColumn());
+        var victimeDePassage = gameBoard.getPiece(sceneDeCrime);
+        if(enPassant && victimeDePassage != null){
+            gameBoard.addPiece(sceneDeCrime, null);
+        }
+
         var endPieceType = move.getPromotionPiece() != null ? move.getPromotionPiece() : startPiece.getPieceType();
         var endPiece = new ChessPiece(teamColor, endPieceType);
         gameBoard.addPiece(endPos, endPiece);
@@ -162,6 +169,9 @@ public class ChessGame {
             if(moveIsCastle){
                 gameBoard.addPiece(rookPos, rookPiece);
                 gameBoard.addPiece(endRookPos, null);
+            }
+            if(enPassant){
+                gameBoard.addPiece(sceneDeCrime, victimeDePassage);
             }
         }
 
