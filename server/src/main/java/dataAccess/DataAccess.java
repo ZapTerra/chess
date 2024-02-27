@@ -1,14 +1,14 @@
 package dataAccess;
 
+import model.AuthData;
 import model.UserData;
 
 public interface DataAccess {
     public void iAmBecomeDeath();
 
-    void createUser() throws DataAccessException;
+    void createUser(UserData u, AuthData auth) throws DataAccessException;
 
-    void insertUser(UserData u) throws DataAccessException;
-    void getUser() throws DataAccessException;
+    UserData getUser(UserData u) throws DataAccessException;
 
     void createGame() throws DataAccessException;
 
