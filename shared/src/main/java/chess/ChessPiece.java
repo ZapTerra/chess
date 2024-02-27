@@ -41,6 +41,7 @@ public class ChessPiece {
         KNIGHT,
         ROOK,
         PAWN,
+        MOLEMAN,
     }
 
     /**
