@@ -6,9 +6,9 @@ import model.UserData;
 public interface DataAccess {
     public void iAmBecomeDeath();
 
-    void createUser(UserData u, AuthData auth) throws DataAccessException;
+    void createUser(UserData u) throws DataAccessException;
 
-    UserData getUser(UserData u) throws DataAccessException;
+    UserData getUser(String u) throws DataAccessException;
 
     void createGame() throws DataAccessException;
 
@@ -18,9 +18,9 @@ public interface DataAccess {
 
     void updateGame() throws DataAccessException;
 
-    void createAuth() throws DataAccessException;
+    void createAuth(AuthData a) throws DataAccessException;
 
     void getAuth() throws DataAccessException;
 
-    void deleteAuth() throws DataAccessException;
+    boolean deleteAuth(String a) throws DataAccessException;
 }

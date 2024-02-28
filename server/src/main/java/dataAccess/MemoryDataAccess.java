@@ -19,15 +19,13 @@ public class MemoryDataAccess implements DataAccess {
         tokens.clear();
     }
 
-    public void createUser(UserData u, AuthData a) throws DataAccessException {
+    public void createUser(UserData u) throws DataAccessException {
         users.put(users.size()+1, u);
-        tokens.put(tokens.size()+1, a);
     }
 
-    public UserData getUser(UserData u) throws DataAccessException {
-        String target = u.username();
+    public UserData getUser(String u) throws DataAccessException {
         for (Map.Entry<Integer, UserData> entry : users.entrySet()) {
-            if (entry.getValue().username().equals(target)){
+            if (entry.getValue().username().equals(u)){
                 return entry.getValue();
             }
         }
@@ -50,15 +48,29 @@ public class MemoryDataAccess implements DataAccess {
 
     }
 
-    public void createAuth() throws DataAccessException {
-
+    public void createAuth(AuthData a) throws DataAccessException {
+        tokens.put(tokens.size()+1, a);
     }
 
     public void getAuth() throws DataAccessException {
 
     }
 
-    public void deleteAuth() throws DataAccessException {
-
+    public boolean deleteAuth(String a) throws DataAccessException {
+        int key = 0;
+        AuthData kill = new AuthData("","");
+        boolean found = false;
+        for (Map.Entry<Integer, AuthData> entry : tokens.entrySet()) {
+            if (a.equals(entry.getValue().authToken())){
+                key = entry.getKey();
+                kill = entry.getValue();
+                found = true;
+            }
+        }
+        if(found){
+            tokens.remove(key, kill);
+            return true;
+        }
+        return false;
     }
 }

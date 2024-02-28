@@ -13,7 +13,8 @@ public class Server {
     private final AuthService authService;
     private final GameService gameService;
     private final WebSocketHandler webSocketHandler;
-    record RegisterResult(String username, String authToken, String message){}
+    record AuthLoginResult(String username, String authToken, String message){}
+    record LogoutResult(String message){}
 
     public Server(){
         dataAccess = new MemoryDataAccess();
@@ -36,6 +37,8 @@ public class Server {
 
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);
+        Spark.post("/session", this::login);
+        Spark.delete("/session", this::logout);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -56,8 +59,26 @@ public class Server {
             token = serviceResponse.authToken();
         }
 
-        var registerResult = new RegisterResult(name, token, res.body());
+        var registerResult = new AuthLoginResult(name, token, res.body());
         return new Gson().toJson(registerResult);
+    }
+
+    private Object login(Request req, Response res) throws DataAccessException {
+        String name = null;
+        String token = null;
+        var serviceResponse = authService.login(req, res);
+        if(serviceResponse != null){
+            name = serviceResponse.username();
+            token = serviceResponse.authToken();
+        }
+
+        var registerResult = new AuthLoginResult(name, token, res.body());
+        return new Gson().toJson(registerResult);
+    }
+
+    private Object logout(Request req, Response res) throws DataAccessException {
+        authService.logout(req, res);
+        return new Gson().toJson(new LogoutResult(res.body()));
     }
 
     public void stop() {

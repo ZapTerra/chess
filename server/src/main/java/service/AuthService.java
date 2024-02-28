@@ -3,6 +3,7 @@ package service;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Objects;
 
 import com.google.gson.Gson;
 import dataAccess.*;
@@ -22,23 +23,64 @@ public class AuthService {
 
     public AuthData createUser(Request req, Response res) throws DataAccessException {
         var userData = new Gson().fromJson(req.body(), UserData.class);
-        System.out.println(userData);
         if(userData == null || userData.username() == null || userData.password() == null || userData.email() == null){
             res.status(400);
             res.body("Error: bad request");
             return null;
         }
-        var existingUser = dataAccess.getUser(userData);
+        var existingUser = dataAccess.getUser(userData.username());
         if(existingUser != null){
             res.status(403);
             res.body("Error: already taken");
             return null;
         }
-        var auth = new AuthData(userData.username(), generateNewToken());
-        dataAccess.createUser(userData, auth);
+        dataAccess.createUser(userData);
+        var auth = addAuth(userData.username());
         res.status(200);
         res.body(new Gson().toJson(auth));
         return auth;
+    }
+
+    public AuthData login(Request req, Response res) throws DataAccessException {
+        var loginData = new Gson().fromJson(req.body(), LoginRequest.class);
+        if(loginData == null || loginData.username() == null || loginData.password() == null){
+            res.status(400);
+            res.body("Error: bad request");
+            return null;
+        }
+        var existingUser = dataAccess.getUser(loginData.username());
+        if(existingUser == null || !Objects.equals(existingUser.password(), loginData.password())){
+            res.status(401);
+            res.body("Error: unauthorized");
+            return null;
+        }
+
+        var auth = addAuth(loginData.username);
+        res.status(200);
+        res.body(new Gson().toJson(auth));
+        return auth;
+    }
+
+    public String logout(Request req, Response res) throws DataAccessException {
+        String auth = req.headers("Authorization");
+        if(auth == null){
+            res.status(500);
+            res.body("Error: bad request");
+        }else if(dataAccess.deleteAuth(auth)){
+            res.status(200);
+        }else{
+            res.status(401);
+            System.out.println("unauthorized");
+            res.body("Error: unauthorized");
+        }
+        return res.body();
+    }
+
+    private AuthData addAuth(String username) throws DataAccessException {
+        var token = generateNewToken();
+        var data = new AuthData(username, token);
+        dataAccess.createAuth(data);
+        return data;
     }
 
     public static String generateNewToken() {
