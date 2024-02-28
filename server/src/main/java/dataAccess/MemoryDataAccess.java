@@ -1,7 +1,9 @@
 package dataAccess;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import spark.Request;
 import spark.Response;
@@ -12,8 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryDataAccess implements DataAccess {
+    private int gameIdCount = 0;
     final private HashMap<Integer, UserData> users = new HashMap<>();
     final private HashMap<Integer, AuthData> tokens = new HashMap<>();
+    final private HashMap<Integer, GameData> games = new HashMap<>();
     public void iAmBecomeDeath(){
         users.clear();
         tokens.clear();
@@ -32,16 +36,17 @@ public class MemoryDataAccess implements DataAccess {
         return null;
     }
 
-    public void createGame() throws DataAccessException {
-        System.out.println("RATS");
+    public int createGame(String gameName) throws DataAccessException {
+        games.put(games.size()+1, new GameData(gameIdCount++, "", "", new ChessGame()));
+        return gameIdCount;
     }
 
     public void getGame() throws DataAccessException {
 
     }
 
-    public void listGames() throws DataAccessException {
-
+    public HashMap<Integer, GameData> listGames() throws DataAccessException {
+        return games;
     }
 
     public void updateGame() throws DataAccessException {
@@ -52,8 +57,13 @@ public class MemoryDataAccess implements DataAccess {
         tokens.put(tokens.size()+1, a);
     }
 
-    public void getAuth() throws DataAccessException {
-
+    public String getAuth(AuthData a) throws DataAccessException {
+        for (Map.Entry<Integer, AuthData> entry : tokens.entrySet()) {
+            if (a.authToken().equals(entry.getValue().authToken())){
+                return entry.getValue().username();
+            }
+        }
+        return "";
     }
 
     public boolean deleteAuth(String a) throws DataAccessException {
