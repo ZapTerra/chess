@@ -1,6 +1,5 @@
 package dataAccess;
 
-import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -8,15 +7,15 @@ import model.UserData;
 import java.util.HashMap;
 
 public interface DataAccess {
-    public void iAmBecomeDeath();
+    void iAmBecomeDeath();
 
     void createUser(UserData u) throws DataAccessException;
 
     UserData getUser(String u) throws DataAccessException;
 
-    public int createGame(String gameName) throws DataAccessException;
+    int createGame(String gameName) throws DataAccessException;
 
-    public boolean joinGame(String username, String color, int gameID);
+    boolean joinGame(String username, String color, int gameID) throws DataAccessException;
 
     MemoryDataAccess.GetGameResponse getGame(int gameID) throws DataAccessException;
 

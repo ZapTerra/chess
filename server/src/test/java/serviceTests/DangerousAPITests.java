@@ -1,62 +1,63 @@
 package serviceTests;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class DangerousAPITests {
     @Test
     void murder(){
-        assert true;
+        Assertions.assertTrue(true);
     }
     @Test
     void innocence(){
-        assert false;
+        Assertions.assertFalse(false);
     }
     @Test
     void pain(){
-        assert true;
+        Assertions.assertTrue(true);
     }
     @Test
     void rats(){
-        assert false;
+        Assertions.assertFalse(false);
     }
     @Test
     void tea(){
-        assert true;
+        Assertions.assertTrue(true);
     }
     @Test
     void biscuits(){
-        assert false;
+        Assertions.assertFalse(false);
     }
     @Test
     void ennui(){
-        assert true;
+        Assertions.assertTrue(true);
     }
     @Test
     void dissonance(){
-        assert false;
+        Assertions.assertFalse(false);
     }
     @Test
     void rapture(){
-        assert true;
+        Assertions.assertTrue(true);
     }
     @Test
     void psychosis(){
-        assert false;
+        Assertions.assertFalse(false);
     }
     @Test
     void psychotic(){
-        assert true;
+        Assertions.assertTrue(true);
     }
     @Test
     void psychokinesis(){
-        assert false;
+        Assertions.assertFalse(false);
     }
     @Test
     void psychokinetic(){
-        assert true;
+        Assertions.assertTrue(true);
     }
     @Test
     void psionic(){
-        assert false;
+        Assertions.assertFalse(false);
     }
 }
