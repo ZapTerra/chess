@@ -10,8 +10,8 @@ import static client.EscapeSequences.*;
 public class Repl implements NotificationHandler {
     private final ChessClient client;
 
-    public Repl(String serverUrl) {
-        client = new ChessClient(serverUrl, this);
+    public Repl() {
+        client = new ChessClient();
     }
 
     public void run() {
