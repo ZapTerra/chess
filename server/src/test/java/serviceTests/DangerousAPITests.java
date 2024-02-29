@@ -9,9 +9,13 @@ public class DangerousAPITests {
         Assertions.assertTrue(true);
     }
     @Test
+<<<<<<< HEAD
+    void innocence(){Assertions.assertFalse(false);}
+=======
     void innocence(){
         Assertions.assertFalse(false);
     }
+>>>>>>> 94bab2b0f0dea12f810889d4f14a9a10d336ff56
     @Test
     void pain(){
         Assertions.assertTrue(true);
@@ -33,9 +37,13 @@ public class DangerousAPITests {
         Assertions.assertTrue(true);
     }
     @Test
+<<<<<<< HEAD
+    void dissonance(){Assertions.assertFalse(false);}
+=======
     void dissonance(){
         Assertions.assertFalse(false);
     }
+>>>>>>> 94bab2b0f0dea12f810889d4f14a9a10d336ff56
     @Test
     void rapture(){
         Assertions.assertTrue(true);
@@ -45,9 +53,13 @@ public class DangerousAPITests {
         Assertions.assertFalse(false);
     }
     @Test
+<<<<<<< HEAD
+    void psychotic(){Assertions.assertTrue(true);}
+=======
     void psychotic(){
         Assertions.assertTrue(true);
     }
+>>>>>>> 94bab2b0f0dea12f810889d4f14a9a10d336ff56
     @Test
     void psychokinesis(){
         Assertions.assertFalse(false);

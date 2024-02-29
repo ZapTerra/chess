@@ -59,12 +59,21 @@ public class MemoryDataAccess implements DataAccess {
             GameData game = games.get(mapKey);
             if(color.equals("WHITE") && (game.whiteUsername() == null || game.whiteUsername().isEmpty())){
                 games.put(mapKey, new GameData(
+<<<<<<< HEAD
+                    game.gameID(),
+                    username,
+                    game.blackUsername(),
+                    game.gameName(),
+                    game.game()
+                    )
+=======
                                 game.gameID(),
                                 username,
                                 game.blackUsername(),
                                 game.gameName(),
                                 game.game()
                         )
+>>>>>>> 94bab2b0f0dea12f810889d4f14a9a10d336ff56
                 );
                 return true;
             }

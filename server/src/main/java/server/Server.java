@@ -3,14 +3,12 @@ import com.google.gson.Gson;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryDataAccess;
-import server.websocket.WebSocketHandler;
 import spark.*;
 import service.*;
 public class Server {
     private final DataAccess dataAccess;
     private final AuthService authService;
     private final GameService gameService;
-    private final WebSocketHandler webSocketHandler;
     record AuthLoginResult(String username, String authToken, String message){}
     record MessageResult(String message){}
     record CreateGameGood(int gameID){}
@@ -19,14 +17,12 @@ public class Server {
         dataAccess = new MemoryDataAccess();
         authService = new AuthService(dataAccess);
         gameService = new GameService(dataAccess);
-        webSocketHandler = new WebSocketHandler();
     }
 
     public Server(DataAccess dataAccess){
         this.dataAccess = dataAccess;
         authService = new AuthService(dataAccess);
         gameService = new GameService(dataAccess);
-        webSocketHandler = new WebSocketHandler();
     }
 
     public int run(int desiredPort) {

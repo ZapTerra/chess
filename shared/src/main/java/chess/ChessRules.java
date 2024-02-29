@@ -1,4 +1,8 @@
 package chess;
+<<<<<<< HEAD
+import org.apache.commons.lang3.ArrayUtils;
+=======
+>>>>>>> 94bab2b0f0dea12f810889d4f14a9a10d336ff56
 
 import java.util.*;
 import java.util.List;
@@ -103,15 +107,23 @@ public class ChessRules {
 
     public static ArrayList<ChessMove> queen(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
         clearMoves();
+<<<<<<< HEAD
+        simplePiece(ArrayUtils.addAll(rookMoves, bishopMoves), true, board, color, position);
+=======
         simplePiece(rookMoves, true, board, color, position);
         simplePiece(bishopMoves, true, board, color, position);
+>>>>>>> 94bab2b0f0dea12f810889d4f14a9a10d336ff56
         return moves;
     }
 
     public static ArrayList<ChessMove> king(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
         clearMoves();
+<<<<<<< HEAD
+        simplePiece(ArrayUtils.addAll(rookMoves, bishopMoves), false, board, color, position);
+=======
         simplePiece(rookMoves, false, board, color, position);
         simplePiece(bishopMoves, false, board, color, position);
+>>>>>>> 94bab2b0f0dea12f810889d4f14a9a10d336ff56
         addCastle(board, color, position);
         return moves;
     }
