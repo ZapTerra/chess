@@ -1,5 +1,6 @@
 package dataAccess;
 
+import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -15,7 +16,9 @@ public interface DataAccess {
 
     public int createGame(String gameName) throws DataAccessException;
 
-    void getGame() throws DataAccessException;
+    public boolean joinGame(String username, String color, int gameID);
+
+    MemoryDataAccess.GetGameResponse getGame(int gameID) throws DataAccessException;
 
     HashMap<Integer, GameData> listGames() throws DataAccessException;
 

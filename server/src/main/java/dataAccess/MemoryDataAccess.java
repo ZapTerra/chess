@@ -1,26 +1,24 @@
 package dataAccess;
 
 import chess.ChessGame;
-import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import spark.Request;
-import spark.Response;
 
-import javax.xml.crypto.Data;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryDataAccess implements DataAccess {
-    private int gameIdCount = 0;
+    private int gameIDCount = 0;
     final private HashMap<Integer, UserData> users = new HashMap<>();
     final private HashMap<Integer, AuthData> tokens = new HashMap<>();
     final private HashMap<Integer, GameData> games = new HashMap<>();
+    public record GetGameResponse(boolean found, int mapKey){}
     public void iAmBecomeDeath(){
         users.clear();
         tokens.clear();
+        games.clear();
+        gameIDCount = 0;
     }
 
     public void createUser(UserData u) throws DataAccessException {
@@ -37,12 +35,47 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     public int createGame(String gameName) throws DataAccessException {
-        games.put(games.size()+1, new GameData(gameIdCount++, "", "", new ChessGame()));
-        return gameIdCount;
+        games.put(games.size()+1, new GameData(++gameIDCount, null, null, gameName, new ChessGame()));
+        return gameIDCount;
     }
 
-    public void getGame() throws DataAccessException {
+    public boolean joinGame(String username, String color, int mapKey){
+        if(color == null){
+            return true;
+        }
+        GameData game = games.get(mapKey);
+        if(color.equals("WHITE") && (game.whiteUsername() == null || game.whiteUsername().isEmpty())){
+            games.put(mapKey, new GameData(
+                game.gameID(),
+                username,
+                game.blackUsername(),
+                game.gameName(),
+                game.game()
+                )
+            );
+            return true;
+        }
+        if(color.equals("BLACK") && (game.blackUsername() == null ||  game.blackUsername().isEmpty())){
+            games.put(mapKey, new GameData(
+                            game.gameID(),
+                            game.whiteUsername(),
+                            username,
+                            game.gameName(),
+                            game.game()
+                    )
+            );
+            return true;
+        }
+        return false;
+    }
 
+    public GetGameResponse getGame(int gameID) throws DataAccessException {
+        for (Map.Entry<Integer, GameData> entry : games.entrySet()) {
+            if (gameID == entry.getValue().gameID()) {
+                return new GetGameResponse(true, entry.getKey());
+            }
+        }
+        return new GetGameResponse(false, 0);
     }
 
     public HashMap<Integer, GameData> listGames() throws DataAccessException {

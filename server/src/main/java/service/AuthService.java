@@ -2,7 +2,6 @@ package service;
 
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.Objects;
 
 import com.google.gson.Gson;
@@ -61,7 +60,7 @@ public class AuthService {
         return auth;
     }
 
-    public String logout(Request req, Response res) throws DataAccessException {
+    public void logout(Request req, Response res) throws DataAccessException {
         String auth = req.headers("Authorization");
         if(auth == null){
             res.status(500);
@@ -73,7 +72,7 @@ public class AuthService {
             System.out.println("unauthorized");
             res.body("Error: unauthorized");
         }
-        return res.body();
+        res.body();
     }
 
     private AuthData addAuth(String username) throws DataAccessException {
