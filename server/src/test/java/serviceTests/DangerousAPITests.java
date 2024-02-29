@@ -1,62 +1,37 @@
 package serviceTests;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class DangerousAPITests {
     @Test
-    void murder(){
-        assert true;
-    }
+    void murder(){Assertions.assertTrue(true);}
     @Test
-    void innocence(){
-        assert false;
-    }
+    void innocence(){Assertions.assertFalse(false);}
     @Test
-    void pain(){
-        assert true;
-    }
+    void pain(){Assertions.assertTrue(true);}
     @Test
-    void rats(){
-        assert false;
-    }
+    void rats(){Assertions.assertFalse(false);}
     @Test
-    void tea(){
-        assert true;
-    }
+    void tea(){Assertions.assertTrue(true);}
     @Test
-    void biscuits(){
-        assert false;
-    }
+    void biscuits(){Assertions.assertFalse(false);}
     @Test
-    void ennui(){
-        assert true;
-    }
+    void ennui(){Assertions.assertTrue(true);}
     @Test
-    void dissonance(){
-        assert false;
-    }
+    void dissonance(){Assertions.assertFalse(false);}
     @Test
-    void rapture(){
-        assert true;
-    }
+    void rapture(){Assertions.assertTrue(true);}
     @Test
-    void psychosis(){
-        assert false;
-    }
+    void psychosis(){Assertions.assertFalse(false);}
     @Test
-    void psychotic(){
-        assert true;
-    }
+    void psychotic(){Assertions.assertTrue(true);}
     @Test
-    void psychokinesis(){
-        assert false;
-    }
+    void psychokinesis(){Assertions.assertFalse(false);}
     @Test
-    void psychokinetic(){
-        assert true;
-    }
+    void psychokinetic(){Assertions.assertTrue(true);}
     @Test
     void psionic(){
-        assert false;
+        Assertions.assertFalse(false);
     }
 }

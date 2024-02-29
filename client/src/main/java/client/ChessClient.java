@@ -1,25 +1,13 @@
 package client;
 
-import client.websocket.NotificationHandler;
-import client.websocket.WebSocketFacade;
-import com.google.gson.Gson;
 import exception.ResponseException;
-import server.ServerFacade;
 
 import java.util.Arrays;
 
 public class ChessClient {
-    private String visitorName = null;
-    private final ServerFacade server;
-    private final String serverUrl;
-    private final NotificationHandler notificationHandler;
-    private WebSocketFacade ws;
     private State state = State.SIGNEDOUT;
 
-    public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
-        server = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
-        this.notificationHandler = notificationHandler;
+    public ChessClient() {
     }
 
     public String eval(String input) {
@@ -40,9 +28,7 @@ public class ChessClient {
     public String signIn(String... params) throws ResponseException {
         if (params.length >= 1) {
             state = State.SIGNEDIN;
-            visitorName = String.join("-", params);
-            ws = new WebSocketFacade(serverUrl, notificationHandler);
-            ws.enterPetShop(visitorName);
+            String visitorName = String.join("-", params);
             return String.format("You signed in as %s.", visitorName);
         }
         throw new ResponseException(400, "Expected: <yourname>");

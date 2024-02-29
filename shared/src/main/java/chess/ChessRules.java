@@ -1,4 +1,5 @@
 package chess;
+
 import java.util.*;
 import java.util.List;
 
@@ -29,8 +30,7 @@ public class ChessRules {
     };
 
     public static ArrayList<ChessMove> pawn(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
-        moves.clear();
-        positions.clear();
+        clearMoves();
         List<ChessPiece.PieceType> possiblePromotions = Arrays.asList(ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.QUEEN);
 
         boolean amBlack = color == ChessGame.TeamColor.BLACK;
@@ -84,46 +84,45 @@ public class ChessRules {
     }
 
     public static ArrayList<ChessMove> rook(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
-        moves.clear();
-        positions.clear();
-
-        addMoves(true, board, color, position, rookMoves);
-
+        clearMoves();
+        simplePiece(rookMoves, true, board, color, position);
         return moves;
     }
 
     public static ArrayList<ChessMove> bishop(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
-        moves.clear();
-        positions.clear();
-
-        addMoves(true, board, color, position, bishopMoves);
-
+        clearMoves();
+        simplePiece(bishopMoves, true, board, color, position);
         return moves;
     }
 
     public static ArrayList<ChessMove> knight(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
-        moves.clear();
-        positions.clear();
-
-        addMoves(false, board, color, position, knightMoves);
-
+        clearMoves();
+        simplePiece(knightMoves, false, board, color, position);
         return moves;
     }
 
     public static ArrayList<ChessMove> queen(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
-        moves.clear();
-        positions.clear();
-
-        addMoves(true, board, color, position, rookMoves);
-        addMoves(true, board, color, position, bishopMoves);
-
+        clearMoves();
+        simplePiece(rookMoves, true, board, color, position);
+        simplePiece(bishopMoves, true, board, color, position);
         return moves;
     }
 
-    public static boolean rookIsGood(ChessBoard board, ChessPosition position, int pathStartIndex, int pathEndIndex, int rookColumn){
+    public static ArrayList<ChessMove> king(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
+        clearMoves();
+        simplePiece(rookMoves, false, board, color, position);
+        simplePiece(bishopMoves, false, board, color, position);
+        addCastle(board, color, position);
+        return moves;
+    }
+
+    public static boolean rookIsGood(ChessGame.TeamColor color, ChessBoard board, ChessPosition position, int pathStartIndex, int pathEndIndex, int rookColumn){
         var rookPos = new ChessPosition(position.getRow(), rookColumn);
         var piece = board.getPiece(rookPos);
         if(piece == null){
+            return false;
+        }
+        if(piece.getTeamColor() != color){
             return false;
         }
         if(piece.getPieceType() != ChessPiece.PieceType.ROOK) {
@@ -140,25 +139,13 @@ public class ChessRules {
         return true;
     }
 
-    public static ArrayList<ChessMove> king(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
+    public static void clearMoves(){
         moves.clear();
         positions.clear();
+    }
 
-        addMoves(false, board, color, position, rookMoves);
-        addMoves(false, board, color, position, bishopMoves);
-
-        if(!board.pieceHasMoved(board, position)){
-            if(rookIsGood(board, position, 2, 4, 1)){
-                var castleLeft = new ChessPosition(position.getRow(), position.getColumn() - 2);
-                moves.add(new ChessMove(position, castleLeft, null));
-            }
-            if(rookIsGood(board, position, 6, 7, 8)){
-                var castleRight = new ChessPosition(position.getRow(), position.getColumn() + 2);
-                moves.add(new ChessMove(position, castleRight, null));
-            }
-        }
-
-        return moves;
+    public static void simplePiece(int[][] pieceMoves, boolean recurse, ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
+        addMoves(recurse, board, color, position, pieceMoves);
     }
 
     public static void addMoves(boolean recurse, ChessBoard board, ChessGame.TeamColor color, ChessPosition position, int[][] moveDirections){
@@ -178,6 +165,19 @@ public class ChessRules {
                 if(board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != color){
                     moves.add(new ChessMove(position, pos, null));
                 }
+            }
+        }
+    }
+
+    public static void addCastle(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
+        if(!board.pieceHasMoved(board, position)){
+            if(rookIsGood(color, board, position, 2, 4, 1)){
+                var castleLeft = new ChessPosition(position.getRow(), position.getColumn() - 2);
+                moves.add(new ChessMove(position, castleLeft, null));
+            }
+            if(rookIsGood(color, board, position, 6, 7, 8)){
+                var castleRight = new ChessPosition(position.getRow(), position.getColumn() + 2);
+                moves.add(new ChessMove(position, castleRight, null));
             }
         }
     }
