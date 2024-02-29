@@ -5,8 +5,30 @@ import java.util.List;
 public class ChessRules {
     private static final ArrayList<ChessMove> moves = new ArrayList<>();
     private static final ArrayList<ChessPosition> positions = new ArrayList<>();
+    private static final int[][] rookMoves = new int[][]{
+            {1, 0},
+            {-1, 0},
+            {0, -1},
+            {0, 1}
+    };
+    private static final int[][] bishopMoves = new int[][]{
+            {1, -1},
+            {1, 1},
+            {-1, -1},
+            {-1, 1}
+    };
+    private static final int[][] knightMoves = new int[][]{
+            {2, 1},
+            {2, -1},
+            {-2, 1},
+            {-2, -1},
+            {1, 2},
+            {-1, 2},
+            {1, -2},
+            {-1, -2}
+    };
 
-    public static ArrayList<ChessMove> Pawn(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
+    public static ArrayList<ChessMove> pawn(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
         moves.clear();
         positions.clear();
         List<ChessPiece.PieceType> possiblePromotions = Arrays.asList(ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.QUEEN);
@@ -60,137 +82,40 @@ public class ChessRules {
 
         return moves;
     }
-    public static ArrayList<ChessMove> Rook(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
+
+    public static ArrayList<ChessMove> rook(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
         moves.clear();
         positions.clear();
 
-        int[][] moveDirections = new int[][]{
-                {1, 0},
-                {-1, 0},
-                {0, -1},
-                {0, 1}
-        };
-
-        int[] startPos = new int[]{position.getRow(), position.getColumn()};
-        int[] iterPos;
-        for(int[] dir : moveDirections){
-            iterPos = startPos.clone();
-            do{
-                iterPos[0] += dir[0];
-                iterPos[1] += dir[1];
-                positions.add(new ChessPosition(iterPos[0], iterPos[1]));
-            }while(0 < iterPos[0] && iterPos[0] < 9 && 0 < iterPos[1] && iterPos[1] < 9 && board.getPiece(new ChessPosition(iterPos[0], iterPos[1])) == null);
-        }
-
-        for(ChessPosition pos : positions){
-            if(0 < pos.getRow() && pos.getRow() < 9 && 0 < pos.getColumn() && pos.getColumn() < 9){
-                if(board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != color){
-                    moves.add(new ChessMove(position, pos, null));
-                }
-            }
-        }
+        addMoves(true, board, color, position, rookMoves);
 
         return moves;
     }
-    public static ArrayList<ChessMove> Bishop(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
+
+    public static ArrayList<ChessMove> bishop(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
         moves.clear();
         positions.clear();
 
-        int[][] moveDirections = new int[][]{
-                {1, -1},
-                {1, 1},
-                {-1, -1},
-                {-1, 1}
-        };
-
-        int[] startPos = new int[]{position.getRow(), position.getColumn()};
-        int[] iterPos;
-        for(int[] dir : moveDirections){
-            iterPos = startPos.clone();
-                do{
-                iterPos[0] += dir[0];
-                iterPos[1] += dir[1];
-                positions.add(new ChessPosition(iterPos[0], iterPos[1]));
-            }while(0 < iterPos[0] && iterPos[0] < 9 && 0 < iterPos[1] && iterPos[1] < 9 && board.getPiece(new ChessPosition(iterPos[0], iterPos[1])) == null);
-        }
-
-        for(ChessPosition pos : positions){
-            if(0 < pos.getRow() && pos.getRow() < 9 && 0 < pos.getColumn() && pos.getColumn() < 9){
-                if(board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != color){
-                    moves.add(new ChessMove(position, pos, null));
-                }
-            }
-        }
+        addMoves(true, board, color, position, bishopMoves);
 
         return moves;
     }
-    public static ArrayList<ChessMove> Knight(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
+
+    public static ArrayList<ChessMove> knight(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
         moves.clear();
         positions.clear();
 
-        int[][] moveDirections = new int[][]{
-                {2, 1},
-                {2, -1},
-                {-2, 1},
-                {-2, -1},
-                {1, 2},
-                {-1, 2},
-                {1, -2},
-                {-1, -2}
-        };
-
-        int[] startPos = new int[]{position.getRow(), position.getColumn()};
-        int[] iterPos;
-        for(int[] dir : moveDirections){
-            iterPos = startPos.clone();
-            iterPos[0] += dir[0];
-            iterPos[1] += dir[1];
-            positions.add(new ChessPosition(iterPos[0], iterPos[1]));
-        }
-
-        for(ChessPosition pos : positions){
-            if(0 < pos.getRow() && pos.getRow() < 9 && 0 < pos.getColumn() && pos.getColumn() < 9){
-                if(board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != color){
-                    moves.add(new ChessMove(position, pos, null));
-                }
-            }
-        }
+        addMoves(false, board, color, position, knightMoves);
 
         return moves;
     }
-    public static ArrayList<ChessMove> Queen(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
+
+    public static ArrayList<ChessMove> queen(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
         moves.clear();
         positions.clear();
 
-        int[][] moveDirections = new int[][]{
-                {1, -1},
-                {1, 1},
-                {-1, -1},
-                {-1, 1},
-                {1, 0},
-                {-1, 0},
-                {0, -1},
-                {0, 1}
-        };
-
-        int[] startPos = new int[]{position.getRow(), position.getColumn()};
-        int[] iterPos;
-        for(int[] dir : moveDirections){
-            iterPos = startPos.clone();
-            do{
-                iterPos[0] += dir[0];
-                iterPos[1] += dir[1];
-                positions.add(new ChessPosition(iterPos[0], iterPos[1]));
-            }while(0 < iterPos[0] && iterPos[0] < 9 && 0 < iterPos[1] && iterPos[1] < 9 && board.getPiece(new ChessPosition(iterPos[0], iterPos[1])) == null);
-        }
-
-        for(ChessPosition pos : positions){
-            if(0 < pos.getRow() && pos.getRow() < 9 && 0 < pos.getColumn() && pos.getColumn() < 9){
-                if(board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != color){
-                    moves.add(new ChessMove(position, pos, null));
-                }
-            }
-        }
+        addMoves(true, board, color, position, rookMoves);
+        addMoves(true, board, color, position, bishopMoves);
 
         return moves;
     }
@@ -215,37 +140,12 @@ public class ChessRules {
         return true;
     }
 
-    public static ArrayList<ChessMove> King(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
+    public static ArrayList<ChessMove> king(ChessBoard board, ChessGame.TeamColor color, ChessPosition position){
         moves.clear();
         positions.clear();
 
-        int[][] moveDirections = new int[][]{
-                {1, -1},
-                {1, 1},
-                {-1, -1},
-                {-1, 1},
-                {1, 0},
-                {-1, 0},
-                {0, -1},
-                {0, 1}
-        };
-
-        int[] startPos = new int[]{position.getRow(), position.getColumn()};
-        int[] iterPos;
-        for(int[] dir : moveDirections){
-            iterPos = startPos.clone();
-            iterPos[0] += dir[0];
-            iterPos[1] += dir[1];
-            positions.add(new ChessPosition(iterPos[0], iterPos[1]));
-        }
-
-        for(ChessPosition pos : positions){
-            if(0 < pos.getRow() && pos.getRow() < 9 && 0 < pos.getColumn() && pos.getColumn() < 9){
-                if(board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != color){
-                    moves.add(new ChessMove(position, pos, null));
-                }
-            }
-        }
+        addMoves(false, board, color, position, rookMoves);
+        addMoves(false, board, color, position, bishopMoves);
 
         if(!board.pieceHasMoved(board, position)){
             if(rookIsGood(board, position, 2, 4, 1)){
@@ -259,5 +159,26 @@ public class ChessRules {
         }
 
         return moves;
+    }
+
+    public static void addMoves(boolean recurse, ChessBoard board, ChessGame.TeamColor color, ChessPosition position, int[][] moveDirections){
+        int[] startPos = new int[]{position.getRow(), position.getColumn()};
+        int[] iterPos;
+        for(int[] dir : moveDirections){
+            iterPos = startPos.clone();
+            do{
+                iterPos[0] += dir[0];
+                iterPos[1] += dir[1];
+                positions.add(new ChessPosition(iterPos[0], iterPos[1]));
+            }while(recurse && (0 < iterPos[0] && iterPos[0] < 9 && 0 < iterPos[1] && iterPos[1] < 9 && board.getPiece(new ChessPosition(iterPos[0], iterPos[1])) == null));
+        }
+
+        for(ChessPosition pos : positions){
+            if(0 < pos.getRow() && pos.getRow() < 9 && 0 < pos.getColumn() && pos.getColumn() < 9){
+                if(board.getPiece(pos) == null || board.getPiece(pos).getTeamColor() != color){
+                    moves.add(new ChessMove(position, pos, null));
+                }
+            }
+        }
     }
 }

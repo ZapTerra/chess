@@ -67,22 +67,22 @@ public class ChessPiece {
      */
     public List<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         if(type == PieceType.PAWN){
-            return ChessRules.Pawn(board, color, myPosition);
+            return ChessRules.pawn(board, color, myPosition);
         }
         if(type == PieceType.ROOK){
-            return ChessRules.Rook(board, color, myPosition);
+            return ChessRules.rook(board, color, myPosition);
         }
         if(type == PieceType.BISHOP){
-            return ChessRules.Bishop(board, color, myPosition);
+            return ChessRules.bishop(board, color, myPosition);
         }
         if(type == PieceType.QUEEN){
-            return ChessRules.Queen(board, color, myPosition);
+            return ChessRules.queen(board, color, myPosition);
         }
         if(type == PieceType.KNIGHT){
-            return ChessRules.Knight(board, color, myPosition);
+            return ChessRules.knight(board, color, myPosition);
         }
         if(type == PieceType.KING){
-            return ChessRules.King(board, color, myPosition);
+            return ChessRules.king(board, color, myPosition);
         }
         return null;
     }

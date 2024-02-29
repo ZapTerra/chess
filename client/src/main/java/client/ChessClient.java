@@ -61,10 +61,4 @@ public class ChessClient {
                 - quit
                 """;
     }
-
-    private void assertSignedIn() throws ResponseException {
-        if (state == State.SIGNEDOUT) {
-            throw new ResponseException(400, "You must sign in");
-        }
-    }
 }

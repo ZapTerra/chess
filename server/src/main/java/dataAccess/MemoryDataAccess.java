@@ -82,9 +82,9 @@ public class MemoryDataAccess implements DataAccess {
         return games;
     }
 
-    public void updateGame() throws DataAccessException {
-
-    }
+//    public void updateGame() throws DataAccessException {
+//
+//    }
 
     public void createAuth(AuthData a) throws DataAccessException {
         tokens.put(tokens.size()+1, a);

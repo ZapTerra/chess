@@ -22,7 +22,7 @@ public interface DataAccess {
 
     HashMap<Integer, GameData> listGames() throws DataAccessException;
 
-    void updateGame() throws DataAccessException;
+    //void updateGame() throws DataAccessException;
 
     void createAuth(AuthData a) throws DataAccessException;
 
