@@ -27,12 +27,9 @@ public class SqlDataAccess implements DataAccess{
     }
 
     public void iAmBecomeDeath() throws ResponseException {
-        var statement = """
-            TRUNCATE users
-            TRUNCATE tokens
-            TRUNCATE games
-        """;
-        executeUpdate(statement);
+        executeUpdate("TRUNCATE TABLE users;");
+        executeUpdate("TRUNCATE TABLE tokens;");
+        executeUpdate("TRUNCATE TABLE games;");
     }
 
     public void createUser(UserData u) throws ResponseException {
@@ -59,7 +56,7 @@ public class SqlDataAccess implements DataAccess{
     }
 
     public int createGame(String gameName) throws ResponseException {
-        var statement = "INSERT INTO games (whiteUsername, blackUsername, gameName, json) VALUES (null, null, ?, ?)";
+        var statement = "INSERT INTO games (gameName, json) VALUES (?, ?)";
         var json = new Gson().toJson(new ChessGame());
         return executeUpdate(statement, gameName, json);
     }
@@ -68,13 +65,12 @@ public class SqlDataAccess implements DataAccess{
         if(color == null){
             return true;
         }
-        var joinTeam = (Objects.equals(color, "WHITE") ? "whiteUsername" : (Objects.equals(color, "BLACK") ? "blackUsername" : "unknownTeam"));
+        var joinTeam = color.equals("WHITE") ? "whiteUsername" : (color.equals("BLACK") ? "blackUsername" : "unknownTeam");
         String currentTeamPlayer = "";
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT ? FROM games WHERE gameID=?";
+            var statement = "SELECT whiteUsername, blackUsername FROM games WHERE gameID = ?";
             try (var ps = conn.prepareStatement(statement)) {
-                ps.setString(1, joinTeam);
-                ps.setInt(2, gameID);
+                ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
                         currentTeamPlayer = rs.getString(joinTeam);
@@ -88,12 +84,10 @@ public class SqlDataAccess implements DataAccess{
         if(currentTeamPlayer == null || currentTeamPlayer.isEmpty()){
             var statement = """
                 UPDATE games
-                SET
-                    ? = '?'
-                WHERE
-                    gameID = ?;
-            """;
-            executeUpdate(statement, joinTeam, username, gameID);
+                SET %s = ?
+                WHERE gameID = ?;
+            """.formatted(joinTeam);
+            executeUpdate(statement, username, gameID);
             return true;
         }
         return false;
@@ -119,12 +113,12 @@ public class SqlDataAccess implements DataAccess{
     public HashMap<Integer, GameData> listGames() throws ResponseException {
         var result = new HashMap<Integer, GameData>();
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id, json FROM games";
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, json FROM games";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
                         var game = readGame(rs);
-                        result.put(rs.getInt("gameID"), game);
+                        result.put(game.gameID(), game);
                     }
                 }
             }
@@ -212,29 +206,33 @@ public class SqlDataAccess implements DataAccess{
 
     private final String[] createStatements = {
             """
-            CREATE TABLE IF NOT EXISTS users (
-              `username` varchar(256) NOT NULL,
-              `passHash` varchar(256) NOT NULL,
-              `email` varchar(256) NOT NULL,
-              `json` TEXT DEFAULT NULL,
-              INDEX(username),
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-            CREATE TABLE IF NOT EXISTS tokens (
-              `username` varchar(256) NOT NULL,
-              `authToken` varchar(256) NOT NULL,
-              `json` TEXT DEFAULT NULL,
-              INDEX(username),
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-            CREATE TABLE IF NOT EXISTS games (
-              `gameID` int NOT NULL AUTO_INCREMENT,
-              `whiteUsername` varchar(256),
-              `blackUsername` varchar(256),
-              `gameName` varchar(256),
-              `json` TEXT DEFAULT NULL,
-              PRIMARY KEY (`gameID`),
-              INDEX(gameName)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+        CREATE TABLE IF NOT EXISTS users (
+          `username` varchar(256) NOT NULL,
+          `passHash` varchar(256) NOT NULL,
+          `email` varchar(256) NOT NULL,
+          `json` TEXT DEFAULT NULL,
+          INDEX(username)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        """,
             """
+        CREATE TABLE IF NOT EXISTS tokens (
+          `username` varchar(256) NOT NULL,
+          `authToken` varchar(256) NOT NULL,
+          `json` TEXT DEFAULT NULL,
+          INDEX(username)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        """,
+            """
+        CREATE TABLE IF NOT EXISTS games (
+          `gameID` int NOT NULL AUTO_INCREMENT,
+          `whiteUsername` varchar(256) DEFAULT NULL,
+          `blackUsername` varchar(256) DEFAULT NULL,
+          `gameName` varchar(256),
+          `json` TEXT DEFAULT NULL,
+          PRIMARY KEY (`gameID`),
+          INDEX(gameName)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        """
     };
 
     private void configureDatabase() throws DataAccessException, ResponseException {
