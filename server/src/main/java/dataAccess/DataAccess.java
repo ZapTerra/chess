@@ -28,7 +28,7 @@ public interface DataAccess {
 
     void createAuth(AuthData a) throws DataAccessException, ResponseException;
 
-    String getAuth(AuthData a) throws DataAccessException;
+    String getAuth(AuthData a) throws DataAccessException, ResponseException;
 
-    boolean deleteAuth(String a) throws DataAccessException;
+    boolean deleteAuth(String a) throws DataAccessException, ResponseException;
 }

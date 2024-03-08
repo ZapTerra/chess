@@ -61,7 +61,7 @@ public class AuthService {
         return auth;
     }
 
-    public void logout(Request req, Response res) throws DataAccessException {
+    public void logout(Request req, Response res) throws DataAccessException, ResponseException {
         String auth = req.headers("Authorization");
         if(auth == null){
             res.status(500);

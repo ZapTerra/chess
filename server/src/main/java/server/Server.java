@@ -3,6 +3,7 @@ import com.google.gson.Gson;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryDataAccess;
+import dataAccess.SqlDataAccess;
 import exception.ResponseException;
 import server.websocket.WebSocketHandler;
 import spark.*;
@@ -17,7 +18,7 @@ public class Server {
     record CreateGameGood(int gameID){}
 
     public Server(){
-        dataAccess = new MemoryDataAccess();
+        dataAccess = new SqlDataAccess();
         authService = new AuthService(dataAccess);
         gameService = new GameService(dataAccess);
         webSocketHandler = new WebSocketHandler();
@@ -79,7 +80,7 @@ public class Server {
         return new Gson().toJson(registerResult);
     }
 
-    private Object logout(Request req, Response res) throws DataAccessException {
+    private Object logout(Request req, Response res) throws DataAccessException, ResponseException {
         authService.logout(req, res);
         return new Gson().toJson(new MessageResult(res.body()));
     }

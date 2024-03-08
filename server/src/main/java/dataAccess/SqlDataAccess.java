@@ -11,14 +11,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class SqlDataAccess implements DataAccess{
-    public SqlDataAccess() throws ResponseException, DataAccessException {
-        configureDatabase();
+    public SqlDataAccess() {
+        try {
+            configureDatabase();
+        } catch (DataAccessException | ResponseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void iAmBecomeDeath() throws ResponseException {
@@ -137,12 +142,35 @@ public class SqlDataAccess implements DataAccess{
         executeUpdate(statement, a.username(), a.authToken(), json);
     }
 
-    public String getAuth(AuthData a){
+    public String getAuth(AuthData a) throws ResponseException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username FROM tokens WHERE authToken=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, a.authToken());
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getString("username");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new ResponseException(500, String.format("Unable to read data: %s", e.getMessage()));
+        }
         return "";
     }
 
-    public boolean deleteAuth(String a){
-        return true;
+    public boolean deleteAuth(String a) throws ResponseException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "DELETE FROM tokens WHERE authToken = ?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, a);
+                try (var rs = ps.executeQuery()) {
+                    return rs.rowUpdated();
+                }
+            }
+        } catch (Exception e) {
+            throw new ResponseException(500, String.format("Unable to read data: %s", e.getMessage()));
+        }
     }
 
     private GameData readGame(ResultSet rs) throws SQLException {
@@ -209,7 +237,7 @@ public class SqlDataAccess implements DataAccess{
             """
     };
 
-    private void configureDatabase() throws ResponseException, DataAccessException {
+    private void configureDatabase() throws DataAccessException, ResponseException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
             for (var statement : createStatements) {
