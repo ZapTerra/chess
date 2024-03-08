@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import com.google.gson.Gson;
 import dataAccess.*;
+import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
 import spark.Request;
@@ -20,7 +21,7 @@ public class AuthService {
         this.dataAccess = dataAccess;
     }
 
-    public AuthData createUser(Request req, Response res) throws DataAccessException {
+    public AuthData createUser(Request req, Response res) throws DataAccessException, ResponseException {
         var userData = new Gson().fromJson(req.body(), UserData.class);
         if(userData == null || userData.username() == null || userData.password() == null || userData.email() == null){
             res.status(400);
@@ -40,7 +41,7 @@ public class AuthService {
         return auth;
     }
 
-    public AuthData login(Request req, Response res) throws DataAccessException {
+    public AuthData login(Request req, Response res) throws DataAccessException, ResponseException {
         var loginData = new Gson().fromJson(req.body(), LoginRequest.class);
         if(loginData == null || loginData.username() == null || loginData.password() == null){
             res.status(400);
@@ -75,7 +76,7 @@ public class AuthService {
         res.body();
     }
 
-    private AuthData addAuth(String username) throws DataAccessException {
+    private AuthData addAuth(String username) throws DataAccessException, ResponseException {
         var token = generateNewToken();
         var data = new AuthData(username, token);
         dataAccess.createAuth(data);

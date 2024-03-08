@@ -13,7 +13,6 @@ public class MemoryDataAccess implements DataAccess {
     final private HashMap<Integer, UserData> users = new HashMap<>();
     final private HashMap<Integer, AuthData> tokens = new HashMap<>();
     final private HashMap<Integer, GameData> games = new HashMap<>();
-    public record GetGameResponse(boolean found, int mapKey){}
     public void iAmBecomeDeath(){
         users.clear();
         tokens.clear();
@@ -21,11 +20,11 @@ public class MemoryDataAccess implements DataAccess {
         gameIDCount = 0;
     }
 
-    public void createUser(UserData u) throws DataAccessException {
+    public void createUser(UserData u){
         users.put(users.size()+1, u);
     }
 
-    public UserData getUser(String u) throws DataAccessException {
+    public UserData getUser(String u){
         for (Map.Entry<Integer, UserData> entry : users.entrySet()) {
             if (entry.getValue().username().equals(u)){
                 return entry.getValue();
@@ -34,7 +33,7 @@ public class MemoryDataAccess implements DataAccess {
         return null;
     }
 
-    public int createGame(String gameName) throws DataAccessException {
+    public int createGame(String gameName){
         games.put(games.size()+1, new GameData(++gameIDCount, null, null, gameName, new ChessGame()));
         return gameIDCount;
     }
@@ -69,7 +68,7 @@ public class MemoryDataAccess implements DataAccess {
         return false;
     }
 
-    public GetGameResponse getGame(int gameID) throws DataAccessException {
+    public GetGameResponse getGame(int gameID) {
         for (Map.Entry<Integer, GameData> entry : games.entrySet()) {
             if (gameID == entry.getValue().gameID()) {
                 return new GetGameResponse(true, entry.getKey());
@@ -78,15 +77,15 @@ public class MemoryDataAccess implements DataAccess {
         return new GetGameResponse(false, 0);
     }
 
-    public HashMap<Integer, GameData> listGames() throws DataAccessException {
+    public HashMap<Integer, GameData> listGames() {
         return games;
     }
 
-    public void createAuth(AuthData a) throws DataAccessException {
+    public void createAuth(AuthData a) {
         tokens.put(tokens.size()+1, a);
     }
 
-    public String getAuth(AuthData a) throws DataAccessException {
+    public String getAuth(AuthData a) {
         for (Map.Entry<Integer, AuthData> entry : tokens.entrySet()) {
             if (a.authToken().equals(entry.getValue().authToken())){
                 return entry.getValue().username();
@@ -95,7 +94,7 @@ public class MemoryDataAccess implements DataAccess {
         return "";
     }
 
-    public boolean deleteAuth(String a) throws DataAccessException {
+    public boolean deleteAuth(String a) {
         int key = 0;
         AuthData kill = new AuthData("","");
         boolean found = false;

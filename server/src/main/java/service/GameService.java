@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryDataAccess;
+import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -21,7 +22,7 @@ public class GameService {
     public GameService(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
-    public void listGames(Request req, Response res) throws DataAccessException {
+    public void listGames(Request req, Response res) throws DataAccessException, ResponseException {
         String auth = req.headers("Authorization");
         var username = dataAccess.getAuth(new AuthData("", auth));
         if(username.isEmpty()){
@@ -34,7 +35,7 @@ public class GameService {
         res.status(200);
     }
 
-    public int createGame(Request req, Response res) throws DataAccessException {
+    public int createGame(Request req, Response res) throws DataAccessException, ResponseException {
         String auth = req.headers("Authorization");
         var username = dataAccess.getAuth(new AuthData("", auth));
         if(username.isEmpty()){
@@ -48,7 +49,7 @@ public class GameService {
         return id;
     }
 
-    public void joinGame(Request req, Response res) throws DataAccessException {
+    public void joinGame(Request req, Response res) throws DataAccessException, ResponseException {
         String auth = req.headers("Authorization");
         var requestData = new Gson().fromJson(req.body(), JoinGameRequest.class);
         var username = dataAccess.getAuth(new AuthData("", auth));

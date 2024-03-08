@@ -3,6 +3,7 @@ import com.google.gson.Gson;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryDataAccess;
+import exception.ResponseException;
 import server.websocket.WebSocketHandler;
 import spark.*;
 import service.*;
@@ -46,13 +47,13 @@ public class Server {
         return Spark.port();
     }
 
-    private Object clear(Request req, Response res) {
+    private Object clear(Request req, Response res) throws ResponseException {
         dataAccess.iAmBecomeDeath();
         res.status(200);
         return "";
     }
 
-    private Object register(Request req, Response res) throws DataAccessException {
+    private Object register(Request req, Response res) throws DataAccessException, ResponseException {
         String name = null;
         String token = null;
         var serviceResponse = authService.createUser(req, res);
@@ -65,7 +66,7 @@ public class Server {
         return new Gson().toJson(registerResult);
     }
 
-    private Object login(Request req, Response res) throws DataAccessException {
+    private Object login(Request req, Response res) throws DataAccessException, ResponseException {
         String name = null;
         String token = null;
         var serviceResponse = authService.login(req, res);
@@ -83,12 +84,12 @@ public class Server {
         return new Gson().toJson(new MessageResult(res.body()));
     }
 
-    private Object listGames(Request req, Response res) throws DataAccessException {
+    private Object listGames(Request req, Response res) throws DataAccessException, ResponseException {
         gameService.listGames(req, res);
         return res.body();
     }
 
-    private Object createGame(Request req, Response res) throws DataAccessException {
+    private Object createGame(Request req, Response res) throws DataAccessException, ResponseException {
         int id = gameService.createGame(req, res);
         if(res.status() == 200){
             return new Gson().toJson(new CreateGameGood(id));
@@ -96,7 +97,7 @@ public class Server {
         return new Gson().toJson(new MessageResult(res.body()));
     }
 
-    private Object joinGame(Request req, Response res) throws DataAccessException {
+    private Object joinGame(Request req, Response res) throws DataAccessException, ResponseException {
         gameService.joinGame(req, res);
         return new Gson().toJson(new MessageResult(res.body()));
     }
