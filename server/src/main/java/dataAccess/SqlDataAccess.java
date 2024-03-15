@@ -107,7 +107,7 @@ public class SqlDataAccess implements DataAccess{
         } catch (Exception e) {
             throw new ResponseException(500, String.format("Unable to read data: %s", e.getMessage()));
         }
-        return null;
+        return new GetGameResponse(false, gameID);
     }
 
     public HashMap<Integer, GameData> listGames() throws ResponseException {
@@ -136,11 +136,11 @@ public class SqlDataAccess implements DataAccess{
         executeUpdate(statement, a.username(), a.authToken(), json);
     }
 
-    public String getAuth(AuthData a) throws ResponseException {
+    public String getAuth(String a) throws ResponseException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username FROM tokens WHERE authToken=?";
             try (var ps = conn.prepareStatement(statement)) {
-                ps.setString(1, a.authToken());
+                ps.setString(1, a);
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
                         return rs.getString("username");
@@ -154,17 +154,12 @@ public class SqlDataAccess implements DataAccess{
     }
 
     public boolean deleteAuth(String a) throws ResponseException {
-        try (var conn = DatabaseManager.getConnection()) {
+        if(!getAuth(a).isEmpty()){
             var statement = "DELETE FROM tokens WHERE authToken = ?";
-            try (var ps = conn.prepareStatement(statement)) {
-                ps.setString(1, a);
-                try (var rs = ps.executeQuery()) {
-                    return rs.rowUpdated();
-                }
-            }
-        } catch (Exception e) {
-            throw new ResponseException(500, String.format("Unable to read data: %s", e.getMessage()));
+            executeUpdate(statement, a);
+            return true;
         }
+        return false;
     }
 
     private GameData readGame(ResultSet rs) throws SQLException {

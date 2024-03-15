@@ -85,9 +85,9 @@ public class MemoryDataAccess implements DataAccess {
         tokens.put(tokens.size()+1, a);
     }
 
-    public String getAuth(AuthData a) {
+    public String getAuth(String a) {
         for (Map.Entry<Integer, AuthData> entry : tokens.entrySet()) {
-            if (a.authToken().equals(entry.getValue().authToken())){
+            if (a.equals(entry.getValue().authToken())){
                 return entry.getValue().username();
             }
         }

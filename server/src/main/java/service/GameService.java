@@ -24,7 +24,7 @@ public class GameService {
     }
     public void listGames(Request req, Response res) throws DataAccessException, ResponseException {
         String auth = req.headers("Authorization");
-        var username = dataAccess.getAuth(new AuthData("", auth));
+        var username = dataAccess.getAuth(auth);
         if(username.isEmpty()){
             res.status(401);
             res.body(new Gson().toJson(new MessageResponse("Error: unauthorized")));
@@ -37,7 +37,7 @@ public class GameService {
 
     public int createGame(Request req, Response res) throws DataAccessException, ResponseException {
         String auth = req.headers("Authorization");
-        var username = dataAccess.getAuth(new AuthData("", auth));
+        var username = dataAccess.getAuth(auth);
         if(username.isEmpty()){
             res.status(401);
             res.body("Error: unauthorized");
@@ -52,7 +52,7 @@ public class GameService {
     public void joinGame(Request req, Response res) throws DataAccessException, ResponseException {
         String auth = req.headers("Authorization");
         var requestData = new Gson().fromJson(req.body(), JoinGameRequest.class);
-        var username = dataAccess.getAuth(new AuthData("", auth));
+        var username = dataAccess.getAuth(auth);
         if(requestData == null){
             res.status(400);
             res.body("Error: bad request");

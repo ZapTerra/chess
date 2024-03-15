@@ -20,7 +20,7 @@ public interface DataAccess {
 
     public boolean joinGame(String username, String color, int gameID) throws ResponseException;
 
-    MemoryDataAccess.GetGameResponse getGame(int gameID) throws DataAccessException, ResponseException;
+    GetGameResponse getGame(int gameID) throws DataAccessException, ResponseException;
 
     HashMap<Integer, GameData> listGames() throws DataAccessException, ResponseException;
 
@@ -28,7 +28,7 @@ public interface DataAccess {
 
     void createAuth(AuthData a) throws DataAccessException, ResponseException;
 
-    String getAuth(AuthData a) throws DataAccessException, ResponseException;
+    String getAuth(String a) throws DataAccessException, ResponseException;
 
     boolean deleteAuth(String a) throws DataAccessException, ResponseException;
 }
