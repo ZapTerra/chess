@@ -33,9 +33,11 @@ public class SqlDataAccess implements DataAccess{
     }
 
     public void createUser(UserData u) throws ResponseException {
-        var statement = "INSERT INTO users (username, passHash, email, json) VALUES (?, ?, ?, ?)";
-        var json = new Gson().toJson(u);
-        executeUpdate(statement, u.username(), u.password(), u.email(), json);
+        if(getUser(u.username()) == null){
+            var statement = "INSERT INTO users (username, passHash, email, json) VALUES (?, ?, ?, ?)";
+            var json = new Gson().toJson(u);
+            executeUpdate(statement, u.username(), u.password(), u.email(), json);
+        }
     }
 
     public UserData getUser(String u) throws ResponseException {

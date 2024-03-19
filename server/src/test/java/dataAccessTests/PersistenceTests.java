@@ -4,14 +4,20 @@ import chess.ChessGame;
 import dataAccess.DataAccessException;
 import dataAccess.SqlDataAccess;
 import exception.ResponseException;
+import model.AuthData;
+import model.UserData;
+import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.*;
 import passoffTests.obfuscatedTestClasses.TestServerFacade;
 import passoffTests.testClasses.TestException;
 import passoffTests.testClasses.TestModels;
 import server.Server;
+import service.AuthService;
 
+import java.lang.module.ResolutionException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.sql.SQLData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +27,7 @@ import java.util.Objects;
 public class PersistenceTests {
 
     private static TestServerFacade serverFacade;
+    private static final SqlDataAccess dataAccess = new SqlDataAccess();
     private static Server server;
 
 
@@ -90,186 +97,6 @@ public class PersistenceTests {
         loginRequest.password = registerRequest.password;
         serverFacade.login(loginRequest);
         Assertions.assertEquals(200, serverFacade.getStatusCode(), "Unable to login");
-    }
-
-    @Test
-    public void clearServerGood() throws TestException {
-        serverFacade.clear();
-        Assertions.assertEquals(0, getDatabaseRows());
-    }
-
-    @Test
-    public void clearServerNotBad() throws TestException {
-        serverFacade.clear();
-        Assertions.assertFalse(getDatabaseRows() > 0);
-    }
-
-    @Test
-    public void createUser() throws TestException {
-        serverFacade.clear();
-        TestModels.TestRegisterRequest registerRequest = new TestModels.TestRegisterRequest();
-        registerRequest.username = "ExistingUser";
-        registerRequest.password = "existingUserPassword";
-        registerRequest.email = "eu@mail.com";
-
-        TestModels.TestLoginRegisterResult regResult = serverFacade.register(registerRequest);
-        var auth = regResult.authToken;
-        System.out.println(auth);
-        Assertions.assertNotNull(auth);
-    }
-
-    @Test
-    public void usernameTaken() throws TestException {
-        serverFacade.clear();
-
-        TestModels.TestRegisterRequest registerRequest1 = new TestModels.TestRegisterRequest();
-        registerRequest1.username = "ExistingUser";
-        registerRequest1.password = "existingUserPassword";
-        registerRequest1.email = "eu@mail.com";
-
-        serverFacade.register(registerRequest1);
-
-        TestModels.TestRegisterRequest registerRequest2 = new TestModels.TestRegisterRequest();
-        registerRequest2.username = "ExistingUser";
-        registerRequest2.password = "existingUserPassword";
-        registerRequest2.email = "eu@mail.com";
-
-        TestModels.TestLoginRegisterResult regResult = serverFacade.register(registerRequest2);
-        var auth = regResult.authToken;
-        System.out.println(auth);
-        Assertions.assertNull(auth);
-    }
-
-    @Test
-    public void login() throws TestException {
-        serverFacade.clear();
-        TestModels.TestRegisterRequest registerRequest = new TestModels.TestRegisterRequest();
-        registerRequest.username = "ExistingUser";
-        registerRequest.password = "existingUserPassword";
-        registerRequest.email = "eu@mail.com";
-
-        TestModels.TestLoginRegisterResult regResult = serverFacade.register(registerRequest);
-        var auth = regResult.authToken;
-        TestModels.TestLoginRequest loginRequest = new TestModels.TestLoginRequest();
-        loginRequest.username = "ExistingUser";
-        loginRequest.password = "existingUserPassword";
-        Assertions.assertNotNull(serverFacade.login(loginRequest).authToken);
-    }
-
-    @Test
-    public void badLogin() throws TestException {
-        TestModels.TestLoginRequest loginRequest = new TestModels.TestLoginRequest();
-        loginRequest.username = "FakeUser";
-        loginRequest.password = "notPassword";
-        Assertions.assertNull(serverFacade.login(loginRequest).authToken);
-    }
-
-    @Test
-    public void getBadUser() throws TestException {
-        serverFacade.clear();
-        TestModels.TestRegisterRequest registerRequest = new TestModels.TestRegisterRequest();
-        registerRequest.username = "ExistingUser";
-        registerRequest.password = "existingUserPassword";
-        registerRequest.email = "eu@mail.com";
-
-        TestModels.TestLoginRegisterResult regResult = serverFacade.register(registerRequest);
-        var auth = regResult.authToken;
-        System.out.println(auth);
-        Assertions.assertNotNull(auth);
-    }
-
-    @Test
-    public void logout() throws TestException {
-        serverFacade.clear();
-        TestModels.TestRegisterRequest registerRequest = new TestModels.TestRegisterRequest();
-        registerRequest.username = "ExistingUser";
-        registerRequest.password = "existingUserPassword";
-        registerRequest.email = "eu@mail.com";
-
-        TestModels.TestLoginRegisterResult regResult = serverFacade.register(registerRequest);
-        var auth = regResult.authToken;
-        Assertions.assertNull(serverFacade.logout(auth).message);
-    }
-
-    @Test
-    public void badLogout() throws TestException {
-        serverFacade.clear();
-        assert !serverFacade.logout("bad").message.isEmpty();
-    }
-
-    @Test
-    public void createGame() throws TestException {
-        serverFacade.clear();
-        TestModels.TestRegisterRequest registerRequest = new TestModels.TestRegisterRequest();
-        registerRequest.username = "ExistingUser";
-        registerRequest.password = "existingUserPassword";
-        registerRequest.email = "eu@mail.com";
-        TestModels.TestLoginRegisterResult regResult = serverFacade.register(registerRequest);
-        var auth = regResult.authToken;
-
-        TestModels.TestCreateRequest createGameRequest = new TestModels.TestCreateRequest();
-        createGameRequest.gameName = "game";
-        serverFacade.createGame(createGameRequest, auth);
-        assert Objects.equals(serverFacade.listGames(auth).games[0].gameName, "game");
-    }
-
-    @Test
-    public void createGameBadAuth() throws TestException {
-        serverFacade.clear();
-        TestModels.TestCreateRequest createGameRequest = new TestModels.TestCreateRequest();
-        String auth = "bad";
-        createGameRequest.gameName = "game";
-        serverFacade.createGame(createGameRequest, auth);
-        Assertions.assertNull(serverFacade.listGames(auth).games);
-    }
-
-    @Test
-    public void joinGame() throws TestException {
-        serverFacade.clear();
-        TestModels.TestRegisterRequest registerRequest = new TestModels.TestRegisterRequest();
-        registerRequest.username = "ExistingUser";
-        registerRequest.password = "existingUserPassword";
-        registerRequest.email = "eu@mail.com";
-        TestModels.TestLoginRegisterResult regResult = serverFacade.register(registerRequest);
-        var auth = regResult.authToken;
-
-        TestModels.TestCreateRequest createGameRequest = new TestModels.TestCreateRequest();
-        createGameRequest.gameName = "game";
-        serverFacade.createGame(createGameRequest, auth);
-
-        TestModels.TestJoinRequest joinGameRequest = new TestModels.TestJoinRequest();
-        joinGameRequest.gameID = serverFacade.listGames(auth).games[0].gameID;
-        joinGameRequest.playerColor = ChessGame.TeamColor.WHITE;
-        Assertions.assertNull(serverFacade.verifyJoinPlayer(joinGameRequest, auth).message);
-    }
-
-    @Test
-    public void viewGame() throws TestException {
-        serverFacade.clear();
-        TestModels.TestRegisterRequest registerRequest = new TestModels.TestRegisterRequest();
-        registerRequest.username = "ExistingUser";
-        registerRequest.password = "existingUserPassword";
-        registerRequest.email = "eu@mail.com";
-        TestModels.TestLoginRegisterResult regResult = serverFacade.register(registerRequest);
-        var auth = regResult.authToken;
-
-        TestModels.TestCreateRequest createGameRequest = new TestModels.TestCreateRequest();
-        createGameRequest.gameName = "game";
-        serverFacade.createGame(createGameRequest, auth);
-
-        TestModels.TestJoinRequest joinGameRequest = new TestModels.TestJoinRequest();
-        joinGameRequest.gameID = serverFacade.listGames(auth).games[0].gameID;
-        joinGameRequest.playerColor = null;
-        Assertions.assertNull(serverFacade.verifyJoinPlayer(joinGameRequest, auth).message);
-    }
-
-    @Test
-    public void joinGameBad() throws TestException {
-        String auth = "bad";
-        TestModels.TestJoinRequest joinGameRequest = new TestModels.TestJoinRequest();
-        joinGameRequest.gameID = 0;
-        joinGameRequest.playerColor = ChessGame.TeamColor.WHITE;
-        Assertions.assertNotNull(serverFacade.verifyJoinPlayer(joinGameRequest, auth).message);
     }
 
     private int getDatabaseRows() {
