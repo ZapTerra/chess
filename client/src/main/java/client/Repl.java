@@ -15,7 +15,7 @@ public class Repl implements NotificationHandler {
     }
 
     public void run() {
-        System.out.println("\uD83D\uDC36 CHESS BEGIN");
+        System.out.println("ゴ THE BEADED CURTAIN SLAMS SHUT BEHIND YOU. ゴ\n     THERE IS NO TURNING BACK NOW.");
         System.out.print(client.help());
 
         Scanner scanner = new Scanner(System.in);

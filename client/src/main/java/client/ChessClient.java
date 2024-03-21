@@ -51,14 +51,20 @@ public class ChessClient {
     public String help() {
         if (state == State.SIGNEDOUT) {
             return """
-                    - signIn <yourname>
-                    - quit
+                    Y'roue valid moves:
+                    - help (I will render assistance)
+                    - quit (There is no way back. The only escape is death.)
+                    - login <USER> <PASS> (Request admittance)
+                    - register <USER> <PASS> <EMAIL> (Become an officially recognized gladiator)
                     """;
         }
         return """
-                - list
-                - signOut
-                - quit
+                - help (you should know this by now)
+                - logout (rest before your next battle)
+                - creategame <BATTLENAME> (reserve a time in the arena)
+                - listgames (produce a list of ongoing battles)
+                - joingame <ID> <COLOR(chess)> (enter the arena)
+                - viewgame <ID> (spectate a match)
                 """;
     }
 }
