@@ -1,11 +1,11 @@
-package client;
+package ui;
 
-import client.websocket.NotificationHandler;
+import ui.websocket.NotificationHandler;
 import webSocketMessages.Notification;
 
 import java.util.Scanner;
 
-import static client.EscapeSequences.*;
+import static ui.EscapeSequences.*;
 
 public class Repl implements NotificationHandler {
     private final ChessClient client;

@@ -1,8 +1,7 @@
-package client;
+package ui;
 
-import client.websocket.NotificationHandler;
-import client.websocket.WebSocketFacade;
-import com.google.gson.Gson;
+import ui.websocket.NotificationHandler;
+import ui.websocket.WebSocketFacade;
 import exception.ResponseException;
 import server.ServerFacade;
 
@@ -30,6 +29,8 @@ public class ChessClient {
             return switch (cmd) {
                 case "signin" -> signIn(params);
                 case "quit" -> "quit";
+                case "login" -> login(params);
+                case "register" -> register(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -37,10 +38,17 @@ public class ChessClient {
         }
     }
 
+    public String login(String... params) throws ResponseException {
+        return "";
+    }
+
+    public String register(String... params) throws ResponseException {
+        return "";
+    }
+
     public String signIn(String... params) throws ResponseException {
-        if (params.length >= 1) {
+        if (params.length == 2) {
             state = State.SIGNEDIN;
-            visitorName = String.join("-", params);
             ws = new WebSocketFacade(serverUrl, notificationHandler);
             ws.enterPetShop(visitorName);
             return String.format("You signed in as %s.", visitorName);
@@ -50,21 +58,21 @@ public class ChessClient {
 
     public String help() {
         if (state == State.SIGNEDOUT) {
-            return """
+        return """
                     Y'roue valid moves:
                     - help (I will render assistance)
                     - quit (There is no way back. The only escape is death.)
                     - login <USER> <PASS> (Request admittance)
                     - register <USER> <PASS> <EMAIL> (Become an officially recognized gladiator)
-                    """;
+                """;
         }
         return """
-                - help (you should know this by now)
-                - logout (rest before your next battle)
-                - creategame <BATTLENAME> (reserve a time in the arena)
-                - listgames (produce a list of ongoing battles)
-                - joingame <ID> <COLOR(chess)> (enter the arena)
-                - viewgame <ID> (spectate a match)
+                    - help (you should know this by now)
+                    - logout (rest before your next battle)
+                    - creategame <BATTLENAME> (reserve a time in the arena)
+                    - listgames (produce a list of ongoing battles)
+                    - joingame <ID> <COLOR(chess)> (enter the arena)
+                    - viewgame <ID> (spectate a match)
                 """;
     }
 }

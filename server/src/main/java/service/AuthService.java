@@ -14,7 +14,6 @@ import spark.Response;
 
 public class AuthService {
     private final DataAccess dataAccess;
-    record LoginRequest(String username, String password){}
     private static final SecureRandom secureRandom = new SecureRandom(); //threadsafe
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder(); //threadsafe
     public AuthService(DataAccess dataAccess) {
@@ -42,7 +41,7 @@ public class AuthService {
     }
 
     public AuthData login(Request req, Response res) throws DataAccessException, ResponseException {
-        var loginData = new Gson().fromJson(req.body(), LoginRequest.class);
+        var loginData = new Gson().fromJson(req.body(), UserData.class);
         if(loginData == null || loginData.username() == null || loginData.password() == null){
             res.status(400);
             res.body("Error: bad request");
@@ -55,7 +54,7 @@ public class AuthService {
             return null;
         }
 
-        var auth = addAuth(loginData.username);
+        var auth = addAuth(loginData.username());
         res.status(200);
         res.body(new Gson().toJson(auth));
         return auth;

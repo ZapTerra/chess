@@ -1,4 +1,4 @@
-package client.websocket;
+package ui.websocket;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
@@ -43,6 +43,8 @@ public class WebSocketFacade extends Endpoint {
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
+
+
 
     public void enterPetShop(String visitorName) throws ResponseException {
         try {
