@@ -3,12 +3,12 @@ package server;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.ResponseException;
-import model.AuthData;
-import model.LoginRequest;
-import model.UserData;
+import model.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ServerFacade {
 
@@ -20,43 +20,62 @@ public class ServerFacade {
 
     public void clear() throws ResponseException {
         var path = "/db";
-        this.makeRequest("DELETE", path, null, null);
+        this.makeRequest("DELETE", path, null, null, null);
     }
 
     public AuthData register(UserData userData) throws ResponseException {
         var path = "/user";
-        return this.makeRequest("POST", path, userData, AuthData.class);
+        return this.makeRequest("POST", path, userData, null, AuthData.class);
     }
 
     public AuthData login(LoginRequest loginRequest) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("POST", path, loginRequest, AuthData.class);
+        return this.makeRequest("POST", path, loginRequest, null, AuthData.class);
     }
 
-    public void logout(){
+    public void logout(String authToken) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("POST", path, loginRequest, AuthData.class);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", authToken);
+        this.makeRequest("DELETE", path, null, headers, AuthData.class);
     }
 
-    public void deleteAllPets() throws ResponseException {
-        var path = "/pet";
-        this.makeRequest("DELETE", path, null, null);
+    public ChessGame[] listGames(String authToken) throws ResponseException {
+        var path = "/game";
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", authToken);
+        record ListGameResponse(ChessGame[] games) {}
+        var response = this.makeRequest("GET", path, null, headers, ListGameResponse.class);
+        return response.games;
     }
 
-    public ChessGame[] listPets() throws ResponseException {
-        var path = "/pet";
-        record listPetResponse(Pet[] pet) {
-        }
-        var response = this.makeRequest("GET", path, null, listPetResponse.class);
-        return response.pet();
+    public int createGame(CreateGameRequest createGameRequest, String authToken) throws  ResponseException {
+        var path = "/game";
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", authToken);
+        record ListGameResponse(ChessGame[] games) {}
+        return this.makeRequest("POST", path, createGameRequest, headers, Integer.class);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    public void joinGame(JoinGameRequest joinGameRequest, String authToken) throws ResponseException{
+        var path = "/game";
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", authToken);
+        this.makeRequest("POST", path, joinGameRequest, headers, null);
+    }
+
+    public <T> T makeRequest(String method, String path, Object request, Map<String, String> headers, Class<T> responseClass) throws ResponseException {
         try {
-            URL url = (new URI(serverUrl + path)).toURL();
+            URL url = new URL(serverUrl + path);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+
+            if (headers != null) {
+                for (Map.Entry<String, String> entry : headers.entrySet()) {
+                    http.setRequestProperty(entry.getKey(), entry.getValue());
+                }
+            }
 
             writeBody(request, http);
             http.connect();

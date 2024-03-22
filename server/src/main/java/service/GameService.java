@@ -6,19 +6,15 @@ import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryDataAccess;
 import exception.ResponseException;
-import model.AuthData;
-import model.GameData;
-import model.UserData;
+import model.*;
 import spark.Request;
 import spark.Response;
 
 
 public class GameService {
     private final DataAccess dataAccess;
-    record CreateGameRequest(String gameName){}
     record GameListResponse<C>(C games){}
     record MessageResponse(String message){}
-    record JoinGameRequest(String playerColor, int gameID){}
     public GameService(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
@@ -63,13 +59,13 @@ public class GameService {
             res.body("Error: unauthorized");
             return;
         }
-        MemoryDataAccess.GetGameResponse searchResult = dataAccess.getGame(requestData.gameID);
+        MemoryDataAccess.GetGameResponse searchResult = dataAccess.getGame(requestData.gameID());
         if(!searchResult.found()){
             res.status(400);
             res.body("Error: bad game ID");
             return;
         }
-        if(!dataAccess.joinGame(username, requestData.playerColor, searchResult.mapKey())){
+        if(!dataAccess.joinGame(username, requestData.playerColor(), searchResult.mapKey())){
             res.status(403);
             res.body("Error: already taken");
             return;

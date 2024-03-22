@@ -8,7 +8,7 @@ import server.ServerFacade;
 import java.util.Arrays;
 
 public class ChessClient {
-    private String visitorName = null;
+    private String username = null;
     private final ServerFacade server;
     private final String serverUrl;
     private final NotificationHandler notificationHandler;
