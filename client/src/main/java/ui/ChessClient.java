@@ -1,9 +1,13 @@
 package ui;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
+import com.mysql.cj.log.Log;
 import ui.websocket.NotificationHandler;
 import ui.websocket.WebSocketFacade;
 import exception.ResponseException;
 import server.ServerFacade;
+import model.*;
 
 import java.util.Arrays;
 
@@ -14,6 +18,7 @@ public class ChessClient {
     private final NotificationHandler notificationHandler;
     private WebSocketFacade ws;
     private State state = State.SIGNEDOUT;
+    private String authToken = "";
 
     public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
         server = new ServerFacade(serverUrl);
@@ -27,10 +32,14 @@ public class ChessClient {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "signin" -> signIn(params);
                 case "quit" -> "quit";
                 case "login" -> login(params);
                 case "register" -> register(params);
+                case "logout" -> logout(params);
+                case "creategame" -> createGame(params);
+                case "listgames" -> listGames(params);
+                case "joingame" -> joinGame(params);
+                case "viewgame" -> viewGame(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -39,21 +48,56 @@ public class ChessClient {
     }
 
     public String login(String... params) throws ResponseException {
-        return "";
+        if(state.equals(State.SIGNEDIN)){
+            return "You're already inside the arena!";
+        }
+        if (params.length == 2) {
+            authToken = server.login(params[0], params[1]).authToken();
+            state = State.SIGNEDIN;
+            return "Welcome to the arena.";
+        }
+        return "Expects: login <username> <password>";
     }
 
     public String register(String... params) throws ResponseException {
-        return "";
+        if (params.length == 3) {
+            authToken = server.register(params[0], params[1], params[2]).authToken();
+            state = State.SIGNEDIN;
+            return "Registered!1";
+        }
+        return "Expects: login <username> <password> <email>";
     }
 
-    public String signIn(String... params) throws ResponseException {
-        if (params.length == 2) {
-            state = State.SIGNEDIN;
-            ws = new WebSocketFacade(serverUrl, notificationHandler);
-            ws.enterPetShop(visitorName);
-            return String.format("You signed in as %s.", visitorName);
+    public String logout(String... params) throws ResponseException {
+        if(server.logout(authToken)) {
+            return "Signed out.";
         }
-        throw new ResponseException(400, "Expected: <yourname>");
+        return "Y'ain't signed in";
+    }
+
+    public String createGame(String... params) throws ResponseException {
+        if (params.length == 1) {
+            return server.createGame(params[0], authToken);
+        }
+        return "Expects: creategame <BATTLENAME>";
+    }
+
+    public String listGames(String... params) throws ResponseException {
+        return new Gson().toJson(server.listGames(authToken));
+    }
+
+    public String joinGame(String... params) throws ResponseException {
+        if(params.length == 2){
+            return server.joinGame(Integer.parseInt(params[0]), params[1], authToken);
+        }
+        return "Expects: joinGame <ID> <COLOR(chess)>";
+    }
+
+    public String viewGame(String... params) throws ResponseException {
+        if(params.length == 1){
+            return server.joinGame(Integer.parseInt(params[0]), null, authToken);
+        }
+        return "Expects: viewGame <ID>";
     }
 
     public String help() {
@@ -69,7 +113,7 @@ public class ChessClient {
         return """
                     - help (you should know this by now)
                     - logout (rest before your next battle)
-                    - creategame <BATTLENAME> (reserve a time in the arena)
+                    - creategame <BATTLENAME> (reserve an arena timeslot)
                     - listgames (produce a list of ongoing battles)
                     - joingame <ID> <COLOR(chess)> (enter the arena)
                     - viewgame <ID> (spectate a match)

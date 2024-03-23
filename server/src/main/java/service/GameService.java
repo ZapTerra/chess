@@ -65,8 +65,10 @@ public class GameService {
             res.body("Error: bad game ID");
             return;
         }
+        System.out.println("SCREAM");
         if(!dataAccess.joinGame(username, requestData.playerColor(), searchResult.mapKey())){
             res.status(403);
+            System.out.println(username);
             res.body("Error: already taken");
             return;
         }

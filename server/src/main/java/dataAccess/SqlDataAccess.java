@@ -82,7 +82,7 @@ public class SqlDataAccess implements DataAccess{
         } catch (Exception e) {
             throw new ResponseException(500, String.format("Unable to read data: %s", e.getMessage()));
         }
-
+        System.out.println(currentTeamPlayer);
         if(currentTeamPlayer == null || currentTeamPlayer.isEmpty()){
             var statement = """
                 UPDATE games

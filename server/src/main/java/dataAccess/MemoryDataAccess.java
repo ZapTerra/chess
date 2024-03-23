@@ -6,6 +6,7 @@ import model.GameData;
 import model.UserData;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class MemoryDataAccess implements DataAccess {
@@ -39,6 +40,7 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     public boolean joinGame(String username, String color, int mapKey){
+        color = color.toUpperCase(Locale.ROOT);
         if(color == null){
             return true;
         }

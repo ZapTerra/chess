@@ -60,19 +60,21 @@ public class AuthService {
         return auth;
     }
 
-    public void logout(Request req, Response res) throws DataAccessException, ResponseException {
+    public boolean logout(Request req, Response res) throws DataAccessException, ResponseException {
         String auth = req.headers("Authorization");
         if(auth == null){
             res.status(500);
             res.body("Error: bad request");
         }else if(dataAccess.deleteAuth(auth)){
+            res.body("");
             res.status(200);
+            return true;
         }else{
             res.status(401);
             System.out.println("unauthorized");
             res.body("Error: unauthorized");
         }
-        res.body();
+        return false;
     }
 
     private AuthData addAuth(String username) throws DataAccessException, ResponseException {

@@ -81,8 +81,7 @@ public class Server {
     }
 
     private Object logout(Request req, Response res) throws DataAccessException, ResponseException {
-        authService.logout(req, res);
-        return new Gson().toJson(new MessageResult(res.body()));
+        return authService.logout(req, res);
     }
 
     private Object listGames(Request req, Response res) throws DataAccessException, ResponseException {
