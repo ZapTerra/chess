@@ -88,6 +88,8 @@ public class ChessClient {
 
     public String joinGame(String... params) throws ResponseException {
         if(params.length == 2){
+            PrintChessboard.printChessboard(true);
+            PrintChessboard.printChessboard(false);
             return server.joinGame(Integer.parseInt(params[0]), params[1], authToken);
         }
         return "Expects: joinGame <ID> <COLOR(chess)>";

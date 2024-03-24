@@ -12,7 +12,6 @@ import passoffTests.obfuscatedTestClasses.TestServerFacade;
 import passoffTests.testClasses.TestException;
 import passoffTests.testClasses.TestModels;
 import server.Server;
-import service.AuthService;
 
 import java.lang.module.ResolutionException;
 import java.lang.reflect.Method;

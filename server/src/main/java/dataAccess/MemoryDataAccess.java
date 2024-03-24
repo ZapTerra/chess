@@ -40,10 +40,10 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     public boolean joinGame(String username, String color, int mapKey){
-        color = color.toUpperCase(Locale.ROOT);
         if(color == null){
             return true;
         }
+        color = color.toUpperCase(Locale.ROOT);
         GameData game = games.get(mapKey);
         if(color.equals("WHITE") && (game.whiteUsername() == null || game.whiteUsername().isEmpty())){
             games.put(mapKey, new GameData(

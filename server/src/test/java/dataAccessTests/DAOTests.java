@@ -12,7 +12,6 @@ import passoffTests.obfuscatedTestClasses.TestServerFacade;
 import passoffTests.testClasses.TestException;
 import passoffTests.testClasses.TestModels;
 import server.Server;
-import service.AuthService;
 
 import java.lang.module.ResolutionException;
 import java.lang.reflect.Method;
@@ -45,14 +44,14 @@ public class DAOTests {
     @Test
     public void createAuth() throws ResponseException {
         dataAccess.iAmBecomeDeath();
-        var token = AuthService.generateNewToken();
+        var token = "token";
         dataAccess.createAuth(new AuthData("Francis", token));
     }
 
     @Test
     public void createAuthPersistent() throws ResponseException {
         dataAccess.iAmBecomeDeath();
-        var token = AuthService.generateNewToken();
+        var token = "token";
         dataAccess.createAuth(new AuthData("Francis", token));
         var auth = dataAccess.getAuth(token);
         Assertions.assertFalse(auth.isEmpty());
@@ -61,7 +60,7 @@ public class DAOTests {
     @Test
     public void deleteAuth() throws ResponseException {
         dataAccess.iAmBecomeDeath();
-        var token = AuthService.generateNewToken();
+        var token = "token";
         dataAccess.createAuth(new AuthData("Francis", token));
         dataAccess.deleteAuth(token);
     }
@@ -69,7 +68,7 @@ public class DAOTests {
     @Test
     public void oldAuthCheck() throws ResponseException {
         dataAccess.iAmBecomeDeath();
-        var token = AuthService.generateNewToken();
+        var token = "token";
         dataAccess.createAuth(new AuthData("Francis", token));
         dataAccess.deleteAuth(token);
         var auth = dataAccess.getAuth(token);
@@ -90,7 +89,7 @@ public class DAOTests {
     @Test
     public void getUserFromMultiple() throws ResponseException {
         dataAccess.createUser(new UserData("Francis", "Password", "rats@yahoo.net"));
-        var token = AuthService.generateNewToken();
+        var token = "token";
         dataAccess.createAuth(new AuthData("Francis", token));
     }
 
@@ -114,7 +113,7 @@ public class DAOTests {
     @Test
     public void logout() throws ResponseException {
         dataAccess.iAmBecomeDeath();
-        var token = AuthService.generateNewToken();
+        var token = "token";
         dataAccess.createAuth(new AuthData("Francis", token));
         dataAccess.deleteAuth(token);
         var auth = dataAccess.getAuth(token);
@@ -156,7 +155,7 @@ public class DAOTests {
     @Test
     public void joinGame() throws ResponseException {
         dataAccess.iAmBecomeDeath();
-        var token = AuthService.generateNewToken();
+        var token = "token";
         dataAccess.createAuth(new AuthData("Francis", token));
         var auth = dataAccess.getAuth(token);
         Assertions.assertFalse(auth.isEmpty());
@@ -175,7 +174,7 @@ public class DAOTests {
     @Test
     public void joinGameBad() throws ResponseException {
         dataAccess.iAmBecomeDeath();
-        var token = AuthService.generateNewToken();
+        var token = "token";
         dataAccess.createAuth(new AuthData("Francis", token));
         var auth = dataAccess.getAuth(token);
         Assertions.assertFalse(auth.isEmpty());
