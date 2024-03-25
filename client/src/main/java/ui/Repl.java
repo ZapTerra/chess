@@ -43,5 +43,4 @@ public class Repl implements NotificationHandler {
     private void printPrompt() {
         System.out.print("\n" + RESET + ">>> " + GREEN);
     }
-
 }

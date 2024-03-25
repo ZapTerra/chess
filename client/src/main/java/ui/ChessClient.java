@@ -21,7 +21,7 @@ public class ChessClient {
     private String authToken = "";
 
     public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
-        server = new ServerFacade(serverUrl);
+        server = new ServerFacade(8080);
         this.serverUrl = serverUrl;
         this.notificationHandler = notificationHandler;
     }
@@ -92,7 +92,7 @@ public class ChessClient {
             PrintChessboard.printChessboard(false);
             return server.joinGame(Integer.parseInt(params[0]), params[1], authToken);
         }
-        return "Expects: joinGame <ID> <COLOR (chess)>";
+        return "Expects: joinGame <ID> <COLOR(chess)>";
     }
 
     public String viewGame(String... params) throws ResponseException {
@@ -117,7 +117,7 @@ public class ChessClient {
                     - logout (rest before your next battle)
                     - creategame <BATTLENAME> (reserve an arena timeslot)
                     - listgames (produce a list of ongoing battles)
-                    - joingame <ID> <COLOR (chess)> (enter the arena)
+                    - joingame <ID> <COLOR(chess)> (enter the arena)
                     - viewgame <ID> (spectate a match)
                 """;
     }
