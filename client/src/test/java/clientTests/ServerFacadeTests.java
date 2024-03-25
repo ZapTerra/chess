@@ -1,12 +1,7 @@
-import chess.ChessGame;
-import chess.ChessPiece;
-import dataAccess.SqlDataAccess;
 import exception.ResponseException;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
-
-import java.io.IOException;
 
 
 public class ServerFacadeTests {
@@ -67,6 +62,11 @@ public class ServerFacadeTests {
     }
 
     @Test
+    void logoutUnauthorized() throws Exception {
+        Assertions.assertThrows(ResponseException.class, () -> facade.logout("RATS"));
+    }
+
+    @Test
     void login() throws Exception {
         var authData = facade.register("player1", "password", "p1@email.com");
         facade.logout(authData.authToken());
@@ -86,7 +86,7 @@ public class ServerFacadeTests {
 
     @Test
     void listGamesUnauthorized() throws Exception {
-        Assertions.assertThrows(ResponseException.class, () -> facade.listGames("badpassword"));
+        Assertions.assertThrows(ResponseException.class, () -> facade.listGames("BadPassword"));
     }
 
     @Test
@@ -107,6 +107,11 @@ public class ServerFacadeTests {
     }
 
     @Test
+    void createGameUnauthorized() throws Exception {
+        Assertions.assertThrows(ResponseException.class, () -> facade.createGame("RATS", "RATS"));
+    }
+
+    @Test
     void joinGame() throws Exception {
         var authData = facade.register("player1", "password", "p1@email.com");
         facade.createGame("RATS", authData.authToken());
@@ -118,6 +123,13 @@ public class ServerFacadeTests {
         var authData = facade.register("player1", "password", "p1@email.com");
         facade.createGame("RATS", authData.authToken());
         Assertions.assertThrows(ResponseException.class, () -> facade.joinGame(1, "REPUBLICAN", authData.authToken()));
+    }
+
+    @Test
+    void joinGameUnauthorized() throws Exception {
+        var authData = facade.register("player1", "password", "p1@email.com");
+        facade.createGame("RATS", authData.authToken());
+        Assertions.assertThrows(ResponseException.class, () -> facade.joinGame(1, "WHITE", "RATS"));
     }
 
     @AfterAll
