@@ -27,6 +27,21 @@ public class ServerFacadeTests {
     }
 
     @Test
+    void clearTest() throws Exception{
+        var authData = facade.register("player1", "password", "p1@email.com");
+        facade.clear();
+        Assertions.assertThrows(ResponseException.class, () -> facade.logout(authData.authToken()));
+    }
+
+    @Test
+    void tryJoinClearedGame() throws Exception{
+        var authData = facade.register("player1", "password", "p1@email.com");
+        facade.createGame("RATS", authData.authToken());
+        facade.clear();
+        Assertions.assertThrows(ResponseException.class, () -> facade.joinGame(1, "WHITE", authData.authToken()));
+    }
+
+    @Test
     void register() throws Exception {
         var authData = facade.register("player1", "password", "p1@email.com");
         Assertions.assertTrue(authData.authToken().length() > 10);
