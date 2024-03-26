@@ -62,6 +62,25 @@ public class ServerFacadeTests {
     }
 
     @Test
+    void createGameJoinAndLogoutThenRegisterNewAndJoin() throws Exception {
+        var authToken = facade.register("player1", "password", "p1@email.com").authToken();
+        facade.createGame("CHAMPIONSHIP", authToken);
+        facade.joinGame(1, "WHITE", authToken);
+        facade.logout(authToken);
+        var newAuthToken = facade.register("player2", "StrongerPassword", "p1@email.com").authToken();
+        Assertions.assertDoesNotThrow(() -> facade.joinGame(1, "BLACK", newAuthToken));
+    }
+
+    @Test
+    void twoAuthTokens() throws Exception {
+        var authToken = facade.register("player1", "password", "p1@email.com").authToken();
+        var secondAuthToken = facade.login("player1", "password").authToken();
+        facade.createGame("CHAMPIONSHIP", authToken);
+        facade.joinGame(1, "BLACK", authToken);
+        Assertions.assertDoesNotThrow(() -> facade.joinGame(1, "WHITE", secondAuthToken));
+    }
+
+    @Test
     void logoutUnauthorized() throws Exception {
         Assertions.assertThrows(ResponseException.class, () -> facade.logout("RATS"));
     }
@@ -116,6 +135,21 @@ public class ServerFacadeTests {
         var authData = facade.register("player1", "password", "p1@email.com");
         facade.createGame("RATS", authData.authToken());
         assert facade.joinGame(1, "WHITE", authData.authToken()).equals("{}");
+    }
+
+    @Test
+    void joinGameThenLogout() throws Exception {
+        var authData = facade.register("player1", "password", "p1@email.com");
+        facade.createGame("RATS", authData.authToken());
+        facade.joinGame(1, "WHITE", authData.authToken());
+        Assertions.assertTrue(facade.logout(authData.authToken()));
+    }
+
+    @Test
+    void viewGame() throws Exception {
+        var authData = facade.register("player1", "password", "p1@email.com");
+        facade.createGame("RATS", authData.authToken());
+        Assertions.assertDoesNotThrow(() -> facade.joinGame(1, null, authData.authToken()));
     }
 
     @Test
