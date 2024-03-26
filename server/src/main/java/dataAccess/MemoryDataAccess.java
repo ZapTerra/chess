@@ -5,6 +5,7 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -34,9 +35,9 @@ public class MemoryDataAccess implements DataAccess {
         return null;
     }
 
-    public int createGame(String gameName){
+    public GameData createGame(String gameName){
         games.put(games.size()+1, new GameData(++gameIDCount, null, null, gameName, new ChessGame()));
-        return gameIDCount;
+        return games.get(games.size());
     }
 
     public boolean joinGame(String username, String color, int mapKey){
@@ -79,8 +80,8 @@ public class MemoryDataAccess implements DataAccess {
         return new GetGameResponse(false, 0);
     }
 
-    public HashMap<Integer, GameData> listGames() {
-        return games;
+    public ArrayList<GameData> listGames() {
+        return new ArrayList<>(games.values());
     }
 
     public void createAuth(AuthData a) {

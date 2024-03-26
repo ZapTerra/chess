@@ -18,6 +18,7 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class SqlDataAccess implements DataAccess{
+    private int gameCount = 0;
     public SqlDataAccess() {
         try {
             configureDatabase();
@@ -57,10 +58,12 @@ public class SqlDataAccess implements DataAccess{
         return null;
     }
 
-    public int createGame(String gameName) throws ResponseException {
+    public GameData createGame(String gameName) throws ResponseException {
         var statement = "INSERT INTO games (gameName, json) VALUES (?, ?)";
-        var json = new Gson().toJson(new ChessGame());
-        return executeUpdate(statement, gameName, json);
+        var game = new ChessGame();
+        var json = new Gson().toJson(game);
+        executeUpdate(statement, gameName, json);
+        return new GameData(++gameCount, null, null, gameName, game);
     }
 
     public boolean joinGame(String username, String color, int gameID) throws ResponseException {
@@ -111,15 +114,15 @@ public class SqlDataAccess implements DataAccess{
         return new GetGameResponse(false, gameID);
     }
 
-    public HashMap<Integer, GameData> listGames() throws ResponseException {
-        var result = new HashMap<Integer, GameData>();
+    public ArrayList<GameData> listGames() throws ResponseException {
+        var result = new ArrayList<GameData>();
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, json FROM games";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
                         var game = readGame(rs);
-                        result.put(game.gameID(), game);
+                        result.add(game);
                     }
                 }
             }

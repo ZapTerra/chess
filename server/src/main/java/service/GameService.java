@@ -27,22 +27,22 @@ public class GameService {
             return;
         }
 
-        res.body(new Gson().toJson(new GameListResponse<>(dataAccess.listGames().values())));
+        res.body(new Gson().toJson(dataAccess.listGames()));
         res.status(200);
     }
 
-    public int createGame(Request req, Response res) throws DataAccessException, ResponseException {
+    public GameData createGame(Request req, Response res) throws DataAccessException, ResponseException {
         String auth = req.headers("Authorization");
         var username = dataAccess.getAuth(auth);
         if(username.isEmpty()){
             res.status(401);
             res.body("Error: unauthorized");
-            return 0;
+            return null;
         }
         var requestData = new Gson().fromJson(req.body(), CreateGameRequest.class);
-        int id = dataAccess.createGame(requestData.gameName());
+        var gameData = dataAccess.createGame(requestData.gameName());
         res.status(200);
-        return id;
+        return gameData;
     }
 
     public void joinGame(Request req, Response res) throws DataAccessException, ResponseException {

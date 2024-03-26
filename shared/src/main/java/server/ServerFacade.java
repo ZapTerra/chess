@@ -1,6 +1,5 @@
 package server;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import exception.ResponseException;
@@ -8,6 +7,7 @@ import model.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,13 +43,11 @@ public class ServerFacade {
         return this.makeRequest("DELETE", path, null, headers, boolean.class);
     }
 
-    public ChessGame[] listGames(String authToken) throws ResponseException {
+    public ArrayList listGames(String authToken) throws ResponseException {
         var path = "/game";
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", authToken);
-        record ListGameResponse(ChessGame[] games) {}
-        var response = this.makeRequest("GET", path, null, headers, ListGameResponse.class);
-        return response.games;
+        return this.makeRequest("GET", path, null, headers, ArrayList.class);
     }
 
     public String createGame(String gameName, String authToken) throws  ResponseException {
@@ -57,7 +55,8 @@ public class ServerFacade {
         CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", authToken);
-        return new Gson().toJson(this.makeRequest("POST", path, createGameRequest, headers, LinkedTreeMap.class));
+        var gameData = this.makeRequest("POST", path, createGameRequest, headers, GameData.class);
+        return "Game name: " + gameData.gameName() + " Game ID: " + gameData.gameID();
     }
 
     public String joinGame(int gameID, String playerColor, String authToken) throws ResponseException{
@@ -97,7 +96,6 @@ public class ServerFacade {
             if (!(status / 100 == 2)) {
                 throw new ResponseException(status, "failure: " + status);
             }
-
             //Read body
             T response = null;
             if (http.getContentLength() < 0) {

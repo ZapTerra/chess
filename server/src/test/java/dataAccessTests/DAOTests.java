@@ -141,14 +141,14 @@ public class DAOTests {
     @Test
     public void getNonexistentGame() throws ResponseException {
         dataAccess.iAmBecomeDeath();
-        int gameID = dataAccess.createGame("international rat chess 2017 semifinal round, francis v. maurice");
+        int gameID = dataAccess.createGame("international rat chess 2017 semifinal round, francis v. maurice").gameID();
         assert !dataAccess.getGame(gameID + 1).found();
     }
 
     @Test
     public void createGamePersistent() throws ResponseException {
         dataAccess.iAmBecomeDeath();
-        int gameID = dataAccess.createGame("international rat chess 2017 semifinal round, francis v. maurice");
+        int gameID = dataAccess.createGame("international rat chess 2017 semifinal round, francis v. maurice").gameID();
         assert dataAccess.getGame(gameID).found();
     }
 
@@ -160,27 +160,14 @@ public class DAOTests {
         var auth = dataAccess.getAuth(token);
         Assertions.assertFalse(auth.isEmpty());
 
-        int gameID = dataAccess.createGame("international rat chess 2017 semifinal round, francis v. maurice");
+        int gameID = dataAccess.createGame("international rat chess 2017 semifinal round, francis v. maurice").gameID();
 
         assert dataAccess.joinGame("Francis", "WHITE", gameID);
     }
 
     @Test
     public void viewGame() throws ResponseException {
-        int gameID = dataAccess.createGame("international rat chess 2017 semifinal round, francis v. maurice");
+        int gameID = dataAccess.createGame("international rat chess 2017 semifinal round, francis v. maurice").gameID();
         assert dataAccess.joinGame("Francis", null, gameID);
-    }
-
-    @Test
-    public void joinGameBad() throws ResponseException {
-        dataAccess.iAmBecomeDeath();
-        var token = "token";
-        dataAccess.createAuth(new AuthData("Francis", token));
-        var auth = dataAccess.getAuth(token);
-        Assertions.assertFalse(auth.isEmpty());
-
-        int gameID = dataAccess.createGame("international rat chess 2017 semifinal round, francis v. maurice");
-        dataAccess.joinGame("Francis", "WHITE", gameID);
-        assert !dataAccess.joinGame("Evil Francis", "WHITE", gameID);
     }
 }

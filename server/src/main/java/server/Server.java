@@ -5,6 +5,7 @@ import dataAccess.DataAccessException;
 import dataAccess.MemoryDataAccess;
 import dataAccess.SqlDataAccess;
 import exception.ResponseException;
+import model.GameData;
 import server.websocket.WebSocketHandler;
 import spark.*;
 import service.*;
@@ -86,13 +87,14 @@ public class Server {
 
     private Object listGames(Request req, Response res) throws DataAccessException, ResponseException {
         gameService.listGames(req, res);
+        System.out.println(res.body());
         return res.body();
     }
 
     private Object createGame(Request req, Response res) throws DataAccessException, ResponseException {
-        int id = gameService.createGame(req, res);
+        GameData gameData = gameService.createGame(req, res);
         if(res.status() == 200){
-            return new Gson().toJson(new CreateGameGood(id));
+            return new Gson().toJson(gameData);
         }
         return new Gson().toJson(new MessageResult(res.body()));
     }

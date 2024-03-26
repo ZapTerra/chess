@@ -100,7 +100,7 @@ public class ServerFacadeTests {
     @Test
     void listGames() throws Exception {
         var authData = facade.register("player1", "password", "p1@email.com");
-        assert facade.listGames(authData.authToken()).length == 0;
+        assert facade.listGames(authData.authToken()).isEmpty();
     }
 
     @Test
@@ -111,18 +111,18 @@ public class ServerFacadeTests {
     @Test
     void createGame() throws Exception {
         var authData = facade.register("player1", "password", "p1@email.com");
-        assert facade.listGames(authData.authToken()).length == 0;
+        assert facade.listGames(authData.authToken()).isEmpty();
         facade.createGame("RATS", authData.authToken());
-        assert facade.listGames(authData.authToken()).length == 1;
+        assert facade.listGames(authData.authToken()).size() == 1;
     }
 
     @Test
     void createGames() throws Exception {
         var authData = facade.register("player1", "password", "p1@email.com");
-        assert facade.listGames(authData.authToken()).length == 0;
+        assert facade.listGames(authData.authToken()).isEmpty();
         facade.createGame("RATS", authData.authToken());
         facade.createGame("RATS", authData.authToken());
-        assert facade.listGames(authData.authToken()).length == 2;
+        assert facade.listGames(authData.authToken()).size() == 2;
     }
 
     @Test

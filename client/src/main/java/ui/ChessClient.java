@@ -54,6 +54,9 @@ public class ChessClient {
         if (params.length == 2) {
             authToken = server.login(params[0], params[1]).authToken();
             state = State.SIGNEDIN;
+            if(authToken.isEmpty()){
+                return "Incorrect username or password.";
+            }
             return "Welcome to the arena.";
         }
         return "Expects: login <username> <password>";
@@ -65,11 +68,13 @@ public class ChessClient {
             state = State.SIGNEDIN;
             return "Registered!1";
         }
-        return "Expects: login <username> <password> <email>";
+        return "Expects: register <username> <password> <email>";
     }
 
     public String logout(String... params) throws ResponseException {
         if(server.logout(authToken)) {
+            authToken = "";
+            state = State.SIGNEDOUT;
             return "Signed out.";
         }
         return "Y'ain't signed in";
@@ -83,7 +88,13 @@ public class ChessClient {
     }
 
     public String listGames(String... params) throws ResponseException {
-        return new Gson().toJson(server.listGames(authToken));
+        var games = server.listGames(authToken);
+        var response = "";
+        for (var linkedMap : games) {
+            GameData gameData = new Gson().fromJson(linkedMap.toString(), GameData.class);
+            response += "\nGame name: " + gameData.gameName() + "\n    Game ID: " + gameData.gameID() + "\n    White player: " + gameData.whiteUsername() + "\n    Black player: " + gameData.blackUsername();
+        }
+        return response;
     }
 
     public String joinGame(String... params) throws ResponseException {
