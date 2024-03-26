@@ -1,8 +1,8 @@
+package clientTests;
 import exception.ResponseException;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
-
 
 public class ServerFacadeTests {
     private static Server server;
@@ -81,7 +81,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void logoutUnauthorized() throws Exception {
+    void logoutUnauthorized(){
         Assertions.assertThrows(ResponseException.class, () -> facade.logout("RATS"));
     }
 
@@ -93,7 +93,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void badLogin() throws Exception {
+    void badLogin(){
         Assertions.assertThrows(ResponseException.class, () -> facade.login("charles", "secure"));
     }
 
@@ -104,7 +104,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void listGamesUnauthorized() throws Exception {
+    void listGamesUnauthorized(){
         Assertions.assertThrows(ResponseException.class, () -> facade.listGames("BadPassword"));
     }
 
@@ -126,7 +126,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void createGameUnauthorized() throws Exception {
+    void createGameUnauthorized(){
         Assertions.assertThrows(ResponseException.class, () -> facade.createGame("RATS", "RATS"));
     }
 
